@@ -131,7 +131,9 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
 
     # write output bed file
-    outfile = "_".join(panels) + ".bed"
+    panels = [x.replace(" ", "_") for x in panels]
+    outfile = "&".join(panels) + ".bed"
+    
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
 
