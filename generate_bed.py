@@ -1,5 +1,6 @@
 """
-Generates bed file of given panel from genepanels & exons_nirvana file.
+Generates bed file of given panel from genepanels, genes2transcripts and
+exons_nirvana file.
 
 Jethro Rainford
 200928
@@ -98,7 +99,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
     exons_nirvana.
 
     Args:
-        - panel (str): name of panel
+        - panels (list): name of panel(s)
         - gene_panels (df): df of gene_panels file
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
