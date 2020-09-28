@@ -70,7 +70,7 @@ def load_files(args):
     
     with open(args.exons_nirvana) as exon_file:
         exons_nirvana = pd.read_csv(exon_file, sep="\t", low_memory=False,
-            ames=["chromosome", "start", "end", "gene", "transcript", "exon"]
+            names=["chromosome", "start", "end", "gene", "transcript", "exon"]
         )
     
     with open(args.g2t) as g2t_file:
