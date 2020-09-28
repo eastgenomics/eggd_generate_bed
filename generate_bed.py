@@ -112,15 +112,21 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
             gene_panels.loc[gene_panels["panel"] == panel]["gene"].to_list()
         )
     
+    # ensure everything upper case for instances of lowercase 'orf'
+    genes = [x.upper() for x in genes]
+    
     # get unique list of genes across panels
     genes = list(set(genes))
 
     # get list of transcripts for panel genes
     transcripts = g2t[g2t["gene"].isin(genes)]["transcript"].to_list()
+    
+    # get unique in case of duplicates
+    transcripts = list(set(transcripts))
 
     # get exons from exons_nirvana for transcripts
     exons = exons_nirvana[exons_nirvana["transcript"].isin(transcripts)]
-
+    
     # get required columns for bed file
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
 
