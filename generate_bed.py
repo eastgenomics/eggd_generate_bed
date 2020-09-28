@@ -32,21 +32,15 @@ def parse_args():
     )
     
     parser.add_argument(
-        '-e', '--exons_nirvana',
-        help='exons_nirvana',
-        required=True
+        '-e', '--exons_nirvana', help='exons_nirvana file', required=True
     )
 
     parser.add_argument(
-        '-g', '--gene_panels',
-        help='gene panels file',
-        required=True
+        '-g', '--gene_panels', help='gene panels file', required=True
     )
 
     parser.add_argument(
-        '-t', '--g2t',
-        help='genes2transcripts file',
-        required=True
+        '-t', '--g2t', help='genes2transcripts file', required=True
     )
 
     args = parser.parse_args()
@@ -70,18 +64,21 @@ def load_files(args):
 
     with open(args.gene_panels) as gene_file:
         gene_panels = pd.read_csv(
-            gene_file, sep="\t",names=["panel", "id", "gene"], low_memory=False,
+            gene_file, sep="\t",names=["panel", "id", "gene"],
+            low_memory=False,
         )
     
     with open(args.exons_nirvana) as exon_file:
         exons_nirvana = pd.read_csv(exon_file, sep="\t", low_memory=False,
-        names=["chromosome", "start", "end", "gene", "transcript", "exon"])
+            ames=["chromosome", "start", "end", "gene", "transcript", "exon"]
+        )
     
     with open(args.g2t) as g2t_file:
         g2t = pd.read_csv(g2t_file, sep="\t", low_memory=False,
-        names=["gene", "transcript"]
-    )
+            names=["gene", "transcript"]
+        )
 
+    # build list of panels from given string
     panels = args.panel
     panels = [x.strip() for x in panels.split(",")]
 
