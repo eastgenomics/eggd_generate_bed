@@ -24,7 +24,9 @@ def parse_args():
 
     parser.add_argument(
         '-p', '--panel',
-        help="Name of panel to generate bed for.",
+        help="Name of panel(s) to generate bed for, for multiple panels these\
+            should be provided as a comma seperated list\
+            (i.e. --panel panelA, panelB, panelC etc.)",
         required=True
     )
     
@@ -59,6 +61,7 @@ def load_files(args):
         - args (Namespace): object containing parsed arguments.
     
     Returns:
+        - panels (list): list of panels to generate bed for
         - gene_panels (df): df of gene_panels file
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
@@ -74,14 +77,21 @@ def load_files(args):
         names=["chromosome", "start", "end", "gene", "transcript", "exon"])
     
     with open(args.g2t) as g2t_file:
-        g2t = pd.read_csv(g2t_file, sep="\t",
+        g2t = pd.read_csv(g2t_file, sep="\t", low_memory=False,
         names=["gene", "transcript"]
     )
 
-    return gene_panels, exons_nirvana, g2t
+    panels = args.panel
+    panels = [x.strip() for x in panels.split(",")]
+
+    for panel in panels:
+        assert panel in gene_panels["panel"].to_list(), """
+            Given panel not present in gene panels file"""
+
+    return panels, gene_panels, exons_nirvana, g2t
 
 
-def generate_bed(panel, gene_panels, exons_nirvana, g2t):
+def generate_bed(panels, gene_panels, exons_nirvana, g2t):
     """
     Get panel genes from gene_panels for given panel, get transcript
     to use for each gene from g2t then generate bed from transcripts and
@@ -97,9 +107,16 @@ def generate_bed(panel, gene_panels, exons_nirvana, g2t):
 
     Outputs: panel bed file
     """
-    # get list of panel genes
-    genes = gene_panels.loc[gene_panels["panel"] == panel]["gene"].to_list()
+    # get list of panel genes for each panel
+    genes = []
+    for panel in panels:
+        genes.extend(
+            gene_panels.loc[gene_panels["panel"] == panel]["gene"].to_list()
+        )
     
+    # get unique list of genes across panels
+    genes = list(set(genes))
+
     # get list of transcripts for panel genes
     transcripts = g2t[g2t["gene"].isin(genes)]["transcript"].to_list()
 
@@ -110,7 +127,7 @@ def generate_bed(panel, gene_panels, exons_nirvana, g2t):
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
 
     # write output bed file
-    outfile = panel + ".bed"
+    outfile = "_".join(panels) + ".bed"
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
 
@@ -118,12 +135,11 @@ def main():
     """
     Main function to generate bed file.
     """
-
     args = parse_args()
 
-    gene_panels, exons_nirvana, g2t = load_files(args)
+    panels, gene_panels, exons_nirvana, g2t = load_files(args)
 
-    generate_bed(args.panel, gene_panels, exons_nirvana, g2t)
+    generate_bed(panels, gene_panels, exons_nirvana, g2t)
 
 
 if __name__ == "__main__":
