@@ -1,0 +1,131 @@
+"""
+Generates bed file of given panel from genepanels & exons_nirvana file.
+
+Jethro Rainford
+200928
+"""
+import argparse
+import pandas as pd
+
+
+def parse_args():
+    """
+    Pargse arguments given at cmd line.
+    
+    Args: None
+    
+    Returns:
+        - args (Namespace): object containing parsed arguments.
+    """
+
+    parser = argparse.ArgumentParser(
+        description='Generate BED file from genepanels and exons_nirvana file.'
+        )
+
+    parser.add_argument(
+        '-p', '--panel',
+        help="Name of panel to generate bed for.",
+        required=True
+    )
+    
+    parser.add_argument(
+        '-e', '--exons_nirvana',
+        help='exons_nirvana',
+        required=True
+    )
+
+    parser.add_argument(
+        '-g', '--gene_panels',
+        help='gene panels file',
+        required=True
+    )
+
+    parser.add_argument(
+        '-t', '--g2t',
+        help='genes2transcripts file',
+        required=True
+    )
+
+    args = parser.parse_args()
+
+    return args
+
+
+def load_files(args):
+    """
+    Read in files.
+
+    Args:
+        - args (Namespace): object containing parsed arguments.
+    
+    Returns:
+        - gene_panels (df): df of gene_panels file
+        - exons_nirvana (df): df of exons_nirvana file
+        - g2t (df): df of genes2transcripts file
+    """
+
+    with open(args.gene_panels) as gene_file:
+        gene_panels = pd.read_csv(
+            gene_file, sep="\t",names=["panel", "id", "gene"], low_memory=False,
+        )
+    
+    with open(args.exons_nirvana) as exon_file:
+        exons_nirvana = pd.read_csv(exon_file, sep="\t", low_memory=False,
+        names=["chromosome", "start", "end", "gene", "transcript", "exon"])
+    
+    with open(args.g2t) as g2t_file:
+        g2t = pd.read_csv(g2t_file, sep="\t",
+        names=["gene", "transcript"]
+    )
+
+    return gene_panels, exons_nirvana, g2t
+
+
+def generate_bed(panel, gene_panels, exons_nirvana, g2t):
+    """
+    Get panel genes from gene_panels for given panel, get transcript
+    to use for each gene from g2t then generate bed from transcripts and
+    exons_nirvana.
+
+    Args:
+        - panel (str): name of panel
+        - gene_panels (df): df of gene_panels file
+        - exons_nirvana (df): df of exons_nirvana file
+        - g2t (df): df of genes2transcripts file
+    
+    Returns: None
+
+    Outputs: panel bed file
+    """
+    # get list of panel genes
+    genes = gene_panels.loc[gene_panels["panel"] == panel]["gene"].to_list()
+    
+    # get list of transcripts for panel genes
+    transcripts = g2t[g2t["gene"].isin(genes)]["transcript"].to_list()
+
+    # get exons from exons_nirvana for transcripts
+    exons = exons_nirvana[exons_nirvana["transcript"].isin(transcripts)]
+
+    # get required columns for bed file
+    panel_bed = exons[["chromosome", "start", "end", "transcript"]]
+
+    # write output bed file
+    outfile = panel + ".bed"
+    panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
+
+
+def main():
+    """
+    Main function to generate bed file.
+    """
+
+    args = parse_args()
+
+    gene_panels, exons_nirvana, g2t = load_files(args)
+
+    generate_bed(args.panel, gene_panels, exons_nirvana, g2t)
+
+
+if __name__ == "__main__":
+
+    main()
