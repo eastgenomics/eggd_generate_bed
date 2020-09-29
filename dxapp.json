@@ -1,0 +1,84 @@
+{
+  "name": "eggd_generate_bed",
+  "title": "generate_bed",
+  "summary": "Generates a BED file for a given panel name",
+  "dxapi": "1.0.0",
+  "version": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "panel",
+      "label": "Panel name",
+      "class": "string",
+      "optional": false,
+      "help": "Panel name(s), comma seperated for multiple panels"
+    },
+    {
+      "name": "exons_nirvana",
+      "label": "Exons nirvana file (from 001_Reference)",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "nirvana_genes2transcripts",
+      "label": "Nirvana genes2transcripts file (from 001_Reference)",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "gemini_panels",
+      "label": "Gemini panels file (from 001_Reference)",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "bed_file",
+      "label": "Panel bed file",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 1
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/eggd_generate_bed.sh",
+    "distribution": "Ubuntu",
+    "release": "16.04",
+    "version": "1"
+  },
+  "access": {
+    "project": "CONTRIBUTE",
+    "network": [
+      "*"
+    ]
+  },
+  "regionalOptions": {
+    "aws:eu-central-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x4"
+        }
+      }
+    }
+  }
+}
