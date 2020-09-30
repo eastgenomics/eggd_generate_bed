@@ -2,7 +2,7 @@
 
 ## What does this app do?
 
-Generate a BED file for given panel(s).
+Generate a BED file for given panel(s) and / or genes(s).
 
 ## What are typical use cases for this app?
 
