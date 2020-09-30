@@ -9,8 +9,28 @@
       "name": "panel",
       "label": "Panel name",
       "class": "string",
-      "optional": false,
-      "help": "Panel name(s), comma seperated for multiple panels"
+      "optional": true,
+      "help": "Panel and / or gene name(s), comma seperated for multiple panels. May either define panel here, or by providing the manifest and a sample identifying file."
+    },
+    {
+      "name": "manifest",
+      "label": "Bioinformatics manifest",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        "*"
+      ],
+      "help": "Used to get appropriate panel to generate bed file. Must also provide a sample identifying file (file name used to select panel)."
+    },
+    {
+      "name": "sample_file",
+      "label": "File containing sample id in as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
     },
     {
       "name": "exons_nirvana",
