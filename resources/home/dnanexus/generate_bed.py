@@ -81,7 +81,7 @@ def load_files(args):
 
     # build list of panels from given string
     panels = args.panel
-    panels = [x.strip() for x in panels.split(",")]
+    panels = list(filter(None, [x.strip() for x in panels.split(",")]))
     
     for panel in panels:
         if "_" in panel:
@@ -89,7 +89,7 @@ def load_files(args):
             continue
         else:
             assert panel in gene_panels["panel"].to_list(), """
-                Given panel not present in gene panels file"""
+                Panel {} not present in gene panels file""".format(panel)
 
     return panels, gene_panels, exons_nirvana, g2t
 
@@ -141,7 +141,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
 
     # write output bed file
-    panels = [x.replace(" ", "_") for x in panels]
+    panels = [x.strip(" ").replace(" ", "_") for x in panels]
     outfile = "&".join(panels) + ".bed"
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
