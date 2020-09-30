@@ -11,7 +11,24 @@ This app was created for requiring bed files for Gemini panels to generate cover
 
 ## What data are required for this app to run?
 
-This app the panel(s) to generate a BED for and the genepanels, genes2transcripts and exons_nirvana files.
+This app requires the following files:
+- genepanels (from 001_References)
+- genes2transcripts (from 001_References)
+- exons_nirvana (from 001_References) 
+
+AND also either:
+
+- the panel(s) and or genes(s) to generate the bed for as a comma seperated string, with
+    genes being prefixed with an underscore (i.e. DDG2P, _CFTR)
+
+OR
+
+- bioinformatics manifest (from 001_References)<br>
+AND
+- a sample identifying file (this is used to get the appropriate panel from the manifest for the sample, 
+    this should be named X10000_ as the underscore is used to split and identify the sample)
+
+
 
 ## What does this app output?
 
