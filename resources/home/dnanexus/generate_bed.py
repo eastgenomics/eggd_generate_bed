@@ -12,16 +12,16 @@ import pandas as pd
 def parse_args():
     """
     Pargse arguments given at cmd line.
-    
+
     Args: None
-    
+
     Returns:
         - args (Namespace): object containing parsed arguments.
     """
 
     parser = argparse.ArgumentParser(
         description='Generate BED file from genepanels and exons_nirvana file.'
-        )
+    )
 
     parser.add_argument(
         '-p', '--panel',
@@ -31,7 +31,7 @@ def parse_args():
             (i.e. --panel panelA, panelB, _gene1, _gene2 etc.)",
         required=True
     )
-    
+
     parser.add_argument(
         '-e', '--exons_nirvana', help='exons_nirvana file', required=True
     )
@@ -55,7 +55,7 @@ def load_files(args):
 
     Args:
         - args (Namespace): object containing parsed arguments.
-    
+
     Returns:
         - panels (list): list of panels to generate bed for
         - gene_panels (df): df of gene_panels file
@@ -65,24 +65,25 @@ def load_files(args):
 
     with open(args.gene_panels) as gene_file:
         gene_panels = pd.read_csv(
-            gene_file, sep="\t",names=["panel", "id", "gene"],
+            gene_file, sep="\t", names=["panel", "id", "gene"],
             low_memory=False,
         )
-    
+
     with open(args.exons_nirvana) as exon_file:
-        exons_nirvana = pd.read_csv(exon_file, sep="\t", low_memory=False,
+        exons_nirvana = pd.read_csv(
+            exon_file, sep="\t", low_memory=False,
             names=["chromosome", "start", "end", "gene", "transcript", "exon"]
         )
-    
+
     with open(args.g2t) as g2t_file:
-        g2t = pd.read_csv(g2t_file, sep="\t", low_memory=False,
-            names=["gene", "transcript"]
+        g2t = pd.read_csv(
+            g2t_file, sep="\t", low_memory=False, names=["gene", "transcript"]
         )
 
     # build list of panels from given string
     panels = args.panel
     panels = list(filter(None, [x.strip() for x in panels.split(",")]))
-    
+
     # check passed genes in g2t, panels in gene panels
     for panel in panels:
         if "_" in panel:
@@ -106,38 +107,39 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
         - gene_panels (df): df of gene_panels file
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
-    
+
     Returns: None
 
     Outputs: panel bed file
     """
     # get list of panel genes for each panel
     genes = []
-    
+
     for panel in panels:
         if "_" in panel:
             # single gene
             genes.append(panel.strip("_"))
         else:
             genes.extend(
-                gene_panels.loc[gene_panels["panel"] == panel]["gene"].to_list()
+                gene_panels.loc[
+                    gene_panels["panel"] == panel]["gene"].to_list()
             )
 
     # ensure everything upper case (i.e. instances of lowercase 'orf')
     genes = [x.upper() for x in genes]
-    
+
     # get unique list of genes across panels
     genes = list(set(genes))
 
     # get list of transcripts for panel genes
     transcripts = g2t[g2t["gene"].isin(genes)]["transcript"].to_list()
-    
+
     # get unique in case of duplicates
     transcripts = list(set(transcripts))
 
     # get exons from exons_nirvana for transcripts
     exons = exons_nirvana[exons_nirvana["transcript"].isin(transcripts)]
-    
+
     # get required columns for bed file
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
 
