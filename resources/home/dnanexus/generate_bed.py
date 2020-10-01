@@ -83,10 +83,11 @@ def load_files(args):
     panels = args.panel
     panels = list(filter(None, [x.strip() for x in panels.split(",")]))
     
+    # check passed genes in g2t, panels in gene panels
     for panel in panels:
         if "_" in panel:
-            # skip genes
-            continue
+            assert panel.replace("_", "") in g2t["gene"].to_list(), """
+                Gene {} not present in genes2transcripts file""".format(panel)
         else:
             assert panel in gene_panels["panel"].to_list(), """
                 Panel {} not present in gene panels file""".format(panel)
@@ -122,7 +123,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
                 gene_panels.loc[gene_panels["panel"] == panel]["gene"].to_list()
             )
 
-    # ensure everything upper case for instances of lowercase 'orf'
+    # ensure everything upper case (i.e. instances of lowercase 'orf')
     genes = [x.upper() for x in genes]
     
     # get unique list of genes across panels
