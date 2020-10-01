@@ -23,11 +23,12 @@ AND also either:
 
 OR
 
-- bioinformatics manifest (from 001_References)<br>
-AND
-- a sample identifying file (this is used to get the appropriate panel from the manifest for the sample, 
-    this should be named X10000_ as the underscore is used to split and identify the sample). Any sample identifying file may be used (preferentially smaller to reduce download time)
+- bioinformatics manifest (from 001_References)
 
+AND
+
+- a sample identifying file (this is used to get the appropriate panel from the manifest for the sample, 
+    this should be named X10000_ as the underscore is used to split and identify the sample). Any sample identifying file may be used (preferentially smaller to reduce download time).
 
 
 ## What does this app output?
