@@ -61,6 +61,7 @@ def load_files(args):
         - gene_panels (df): df of gene_panels file
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
+        - build_38 (bool): check for build of exons nirvana used
     """
 
     with open(args.gene_panels) as gene_file:
@@ -74,6 +75,12 @@ def load_files(args):
             exon_file, sep="\t", low_memory=False,
             names=["chromosome", "start", "end", "gene", "transcript", "exon"]
         )
+
+    # check if exons nirvana 37 or 38 used to name output bed
+    if "38" in args.exons_nirvana:
+        build38 = True
+    else:
+        build38 = False
 
     with open(args.g2t) as g2t_file:
         g2t = pd.read_csv(
@@ -93,10 +100,10 @@ def load_files(args):
             assert panel in gene_panels["panel"].to_list(), """
                 Panel {} not present in gene panels file""".format(panel)
 
-    return panels, gene_panels, exons_nirvana, g2t
+    return panels, gene_panels, exons_nirvana, g2t, build38
 
 
-def generate_bed(panels, gene_panels, exons_nirvana, g2t):
+def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     """
     Get panel genes from gene_panels for given panel, get transcript
     to use for each gene from g2t then generate bed from transcripts and
@@ -107,6 +114,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
         - gene_panels (df): df of gene_panels file
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
+        - build38 (bool): check for build of exons nirvana used
 
     Returns: None
 
@@ -145,7 +153,12 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t):
 
     # write output bed file
     panels = [x.strip(" ").replace(" ", "_") for x in panels]
-    outfile = "&".join(panels) + ".bed"
+    outfile = "&".join(panels)
+
+    if build38:
+        outfile = "&".join(panels) + "_38.bed"
+    else:
+        outfile = "&".join(panels) + "_37.bed"
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
@@ -156,9 +169,9 @@ def main():
     """
     args = parse_args()
 
-    panels, gene_panels, exons_nirvana, g2t = load_files(args)
+    panels, gene_panels, exons_nirvana, g2t, build38 = load_files(args)
 
-    generate_bed(panels, gene_panels, exons_nirvana, g2t)
+    generate_bed(panels, gene_panels, exons_nirvana, g2t, build38)
 
 
 if __name__ == "__main__":
