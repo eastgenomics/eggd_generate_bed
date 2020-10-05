@@ -19,6 +19,12 @@
       "label": "Bioinformatics manifest",
       "class": "file",
       "optional": true,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/BioinformaticManifest/"
+        }
+      ],
       "patterns": [
         "*"
       ],
@@ -39,6 +45,12 @@
       "label": "Exons nirvana file (from 001_Reference)",
       "class": "file",
       "optional": false,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/annotation/b37/"
+        }
+      ],
       "patterns": [
         "*"
       ],
@@ -49,16 +61,28 @@
       "label": "Nirvana genes2transcripts file (from 001_Reference)",
       "class": "file",
       "optional": false,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/nirvana_genes2transcripts/"
+        }
+      ],
       "patterns": [
         "*"
       ],
       "help": ""
     },
     {
-      "name": "gemini_panels",
-      "label": "Gemini panels file (from 001_Reference)",
+      "name": "gene_panels",
+      "label": "Gemini gene_panels file (from 001_Reference)",
       "class": "file",
       "optional": false,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/gene_panels/"
+        }
+      ],
       "patterns": [
         "*"
       ],
