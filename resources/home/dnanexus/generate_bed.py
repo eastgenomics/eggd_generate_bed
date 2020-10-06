@@ -69,6 +69,8 @@ def load_files(args):
             gene_file, sep="\t", names=["panel", "id", "gene"],
             low_memory=False,
         )
+        gene_panels["panel"] = gene_panels["panel"].str.lower()
+        gene_panels["gene"] = gene_panels["gene"].str.upper()
 
     with open(args.exons_nirvana) as exon_file:
         exons_nirvana = pd.read_csv(
@@ -86,6 +88,7 @@ def load_files(args):
         g2t = pd.read_csv(
             g2t_file, sep="\t", low_memory=False, names=["gene", "transcript"]
         )
+        g2t["gene"] = g2t["gene"].str.upper()
 
     # build list of panels from given string
     panels = args.panel
@@ -94,10 +97,10 @@ def load_files(args):
     # check passed genes in g2t, panels in gene panels
     for panel in panels:
         if "_" in panel:
-            assert panel.replace("_", "") in g2t["gene"].to_list(), """
+            assert panel.upper().replace("_", "") in g2t["gene"].to_list(), """
                 Gene {} not present in genes2transcripts file""".format(panel)
         else:
-            assert panel in gene_panels["panel"].to_list(), """
+            assert panel.lower() in gene_panels["panel"].to_list(), """\
                 Panel {} not present in gene panels file""".format(panel)
 
     return panels, gene_panels, exons_nirvana, g2t, build38
@@ -126,11 +129,11 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     for panel in panels:
         if "_" in panel:
             # single gene
-            genes.append(panel.strip("_"))
+            genes.append(panel.upper().strip("_"))
         else:
             genes.extend(
                 gene_panels.loc[
-                    gene_panels["panel"] == panel]["gene"].to_list()
+                    gene_panels["panel"] == panel.lower()]["gene"].to_list()
             )
 
     # ensure everything upper case (i.e. instances of lowercase 'orf')
@@ -156,9 +159,9 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     outfile = "&".join(panels)
 
     if build38:
-        outfile = "&".join(panels) + "_38.bed"
+        outfile = "&".join(panels) + "_b38.bed"
     else:
-        outfile = "&".join(panels) + "_37.bed"
+        outfile = "&".join(panels) + "_b37.bed"
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
