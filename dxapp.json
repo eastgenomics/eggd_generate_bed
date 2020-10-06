@@ -15,32 +15,6 @@
       "help": "Panel and / or gene name(s), comma seperated for multiple panels. May either define panel here, or by providing the manifest and a sample identifying file."
     },
     {
-      "name": "manifest",
-      "label": "Bioinformatics manifest",
-      "class": "file",
-      "optional": true,
-      "suggestions": [
-        {
-          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/dynamic_files/BioinformaticManifest/"
-        }
-      ],
-      "patterns": [
-        "*"
-      ],
-      "help": "Used to get appropriate panel to generate bed file. Must also provide a sample identifying file (file name used to select panel)."
-    },
-    {
-      "name": "sample_file",
-      "label": "File containing sample id in as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
-      "class": "file",
-      "optional": true,
-      "patterns": [
-        "*"
-      ],
-      "help": ""
-    },
-    {
       "name": "exons_nirvana",
       "label": "Exons nirvana file (from 001_Reference)",
       "class": "file",
@@ -83,6 +57,32 @@
           "path": "/dynamic_files/gene_panels/"
         }
       ],
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "manifest",
+      "label": "Bioinformatics manifest",
+      "class": "file",
+      "optional": true,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/BioinformaticManifest/"
+        }
+      ],
+      "patterns": [
+        "*"
+      ],
+      "help": "Used to get appropriate panel to generate bed file. Must also provide a sample identifying file (file name used to select panel)."
+    },
+    {
+      "name": "sample_file",
+      "label": "File containing sample id in as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
+      "class": "file",
+      "optional": true,
       "patterns": [
         "*"
       ],
