@@ -96,7 +96,7 @@ def load_files(args):
 
     # check passed genes in g2t, panels in gene panels
     for panel in panels:
-        if "_" in panel:
+        if panel.startswith("_"):
             assert panel.upper().replace("_", "") in g2t["gene"].to_list(), """
                 Gene {} not present in genes2transcripts file""".format(panel)
         else:
