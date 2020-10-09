@@ -159,9 +159,9 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     outfile = "&".join(panels)
 
     if build38:
-        outfile = "&".join(panels) + "_b38.bed"
+        outfile = "&&".join(panels) + "_b38.bed"
     else:
-        outfile = "&".join(panels) + "_b37.bed"
+        outfile = "&&".join(panels) + "_b37.bed"
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
