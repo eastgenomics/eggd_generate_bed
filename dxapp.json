@@ -1,0 +1,127 @@
+{
+  "name": "eggd_generate_bed_v1.0.0",
+  "title": "generate_bed_v1.0.0",
+  "summary": "Generates a BED file for a given panel name",
+  "dxapi": "1.0.0",
+  "properties": {
+  "githubRelease": "v1.0.0"
+},
+  "inputSpec": [
+    {
+      "name": "panel",
+      "label": "Panel name",
+      "class": "string",
+      "optional": true,
+      "help": "Panel and / or gene name(s), comma seperated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
+    },
+    {
+      "name": "exons_nirvana",
+      "label": "Exons nirvana file (from 001_Reference)",
+      "class": "file",
+      "optional": false,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/annotation/b37/"
+        }
+      ],
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "nirvana_genes2transcripts",
+      "label": "Nirvana genes2transcripts file (from 001_Reference)",
+      "class": "file",
+      "optional": false,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/nirvana_genes2transcripts/"
+        }
+      ],
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "gene_panels",
+      "label": "Gemini gene_panels file (from 001_Reference)",
+      "class": "file",
+      "optional": false,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/gene_panels/"
+        }
+      ],
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "manifest",
+      "label": "Bioinformatics manifest",
+      "class": "file",
+      "optional": true,
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/dynamic_files/BioinformaticManifest/"
+        }
+      ],
+      "patterns": [
+        "*"
+      ],
+      "help": "Used to get appropriate panel to generate bed file. Must also provide a sample identifying file (file name used to select panel)."
+    },
+    {
+      "name": "sample_file",
+      "label": "File containing sample id as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "bed_file",
+      "label": "Panel bed file",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 1
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/eggd_generate_bed.sh",
+    "distribution": "Ubuntu",
+    "release": "16.04",
+    "version": "1"
+  },
+  "access": {
+    "project": "CONTRIBUTE"
+  },
+  "regionalOptions": {
+    "aws:eu-central-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x4"
+        }
+      }
+    }
+  }
+}
