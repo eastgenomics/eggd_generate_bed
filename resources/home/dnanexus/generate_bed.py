@@ -67,15 +67,19 @@ def load_files(args):
     with open(args.gene_panels) as gene_file:
         gene_panels = pd.read_csv(
             gene_file, sep="\t", names=["panel", "id", "gene"],
-            low_memory=False,
+            dtype={"name": str, "id": str, "gene": str},
         )
         gene_panels["panel"] = gene_panels["panel"].str.lower()
         gene_panels["gene"] = gene_panels["gene"].str.upper()
 
     with open(args.exons_nirvana) as exon_file:
         exons_nirvana = pd.read_csv(
-            exon_file, sep="\t", low_memory=False,
-            names=["chromosome", "start", "end", "gene", "transcript", "exon"]
+            exon_file, sep="\t",
+            names=["chromosome", "start", "end", "gene", "transcript", "exon"],
+            dtype={
+                "chromosome": str, "start": int, "end": int, "gene": str,
+                "transcript": str, "exon": int
+            }
         )
 
     # check if exons nirvana 37 or 38 used to name output bed
@@ -86,7 +90,8 @@ def load_files(args):
 
     with open(args.g2t) as g2t_file:
         g2t = pd.read_csv(
-            g2t_file, sep="\t", low_memory=False, names=["gene", "transcript"]
+            g2t_file, sep="\t", names=["gene", "transcript"],
+            dtype={"gene": str, "transcript": str}
         )
         g2t["gene"] = g2t["gene"].str.upper()
 
@@ -142,7 +147,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     # get unique list of genes across panels
     genes = list(set(genes))
 
-    # get list of transcripts for panel genes
+    # select transcript for each gene in panel genes from entry in g2t
     transcripts = g2t[g2t["gene"].isin(genes)]["transcript"].to_list()
 
     # get unique in case of duplicates
@@ -156,6 +161,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
 
     # write output bed file
     panels = [x.strip(" ").replace(" ", "_") for x in panels]
+    panels = [x.replace("/", "-") for x in panels]
     outfile = "&".join(panels)
 
     if build38:

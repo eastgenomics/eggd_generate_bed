@@ -12,7 +12,7 @@
       "label": "Panel name",
       "class": "string",
       "optional": true,
-      "help": "Panel and / or gene name(s), comma seperated for multiple panels. May either define panel here, or by providing the manifest and a sample identifying file."
+      "help": "Panel and / or gene name(s), comma seperated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
     },
     {
       "name": "exons_nirvana",
@@ -80,7 +80,7 @@
     },
     {
       "name": "sample_file",
-      "label": "File containing sample id in as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
+      "label": "File containing sample id as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
       "class": "file",
       "optional": true,
       "patterns": [
@@ -113,10 +113,7 @@
     "version": "1"
   },
   "access": {
-    "project": "CONTRIBUTE",
-    "network": [
-      "*"
-    ]
+    "project": "CONTRIBUTE"
   },
   "regionalOptions": {
     "aws:eu-central-1": {
