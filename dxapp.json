@@ -1,10 +1,10 @@
 {
-  "name": "eggd_generate_bed_v1.0.0",
-  "title": "generate_bed_v1.0.0",
+  "name": "generate_bed_v1.0.1",
+  "title": "generate_bed_v1.0.1",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
   "properties": {
-  "githubRelease": "v1.0.0"
+  "githubRelease": "v1.0.1"
 },
   "inputSpec": [
     {
