@@ -132,7 +132,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     genes = []
 
     for panel in panels:
-        if "_" in panel:
+        if panel.startswith("_"):
             # single gene
             genes.append(panel.upper().strip("_"))
         else:
