@@ -13,8 +13,8 @@ main() {
     pip install packages/pytz-* packages/numpy-* packages/pandas-*
 
     # check either panel name or manifest and sample file given
-    if [[ -z "$panel" ]]; then
-        if [[ -z "$manifest_name" ]] && [[ -z "$sample_file_name" ]]; then
+    if [ -z ${panel+x} ]; then
+        if [ -z ${manifest_name+x} ] || [ -z ${sample_file_name+x} ]; then
             echo "No panel or manifest and sample identifying file found. Exiting now."
             exit 1;
         else
