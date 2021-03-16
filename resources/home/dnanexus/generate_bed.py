@@ -90,8 +90,13 @@ def load_files(args):
 
     with open(args.g2t) as g2t_file:
         g2t = pd.read_csv(
-            g2t_file, sep="\t", names=["gene", "transcript"],
-            dtype={"gene": str, "transcript": str}
+            g2t_file, sep="\t", names=[
+                "gene", "transcript", "clinical_tx", "canonical"
+            ],
+            dtype={
+                "gene": str, "transcript": str, "clinical_tx": str,
+                "canonical": str
+            }
         )
         g2t["gene"] = g2t["gene"].str.upper()
 
@@ -148,7 +153,9 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     genes = list(set(genes))
 
     # select transcript for each gene in panel genes from entry in g2t
-    transcripts = g2t[g2t["gene"].isin(genes)]["transcript"].to_list()
+    transcripts = g2t[g2t["gene"].isin(genes)][
+        g2t["clinical_tx"] == "clinical_transcript"
+    ]["transcript"]
 
     # get unique in case of duplicates
     transcripts = list(set(transcripts))
