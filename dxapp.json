@@ -87,6 +87,13 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "output_file_prefix",
+      "label": "Output file prefix",
+      "class": "string",
+      "optional": true,
+      "help": ""
     }
   ],
   "outputSpec": [

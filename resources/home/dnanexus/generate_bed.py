@@ -44,6 +44,10 @@ def parse_args():
         '-t', '--g2t', help='genes2transcripts file', required=True
     )
 
+    parser.add_argument(
+        '-o', '--output', default=None, help='Output file prefix'
+    )
+
     args = parser.parse_args()
 
     return args
@@ -116,7 +120,9 @@ def load_files(args):
     return panels, gene_panels, exons_nirvana, g2t, build38
 
 
-def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
+def generate_bed(
+    panels, gene_panels, exons_nirvana, g2t, build38, output_prefix
+):
     """
     Get panel genes from gene_panels for given panel, get transcript
     to use for each gene from g2t then generate bed from transcripts and
@@ -128,6 +134,7 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
         - build38 (bool): check for build of exons nirvana used
+        - output_prefix (str): Prefix to be added if passed
 
     Returns: None
 
@@ -169,12 +176,14 @@ def generate_bed(panels, gene_panels, exons_nirvana, g2t, build38):
     # write output bed file
     panels = [x.strip(" ").replace(" ", "_") for x in panels]
     panels = [x.replace("/", "-") for x in panels]
-    outfile = "&".join(panels)
+
+    if not output_prefix:
+        output_prefix = "&&".join(panels)
 
     if build38:
-        outfile = "&&".join(panels) + "_b38.bed"
+        outfile = output_prefix + "_b38.bed"
     else:
-        outfile = "&&".join(panels) + "_b37.bed"
+        outfile = output_prefix + "_b37.bed"
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
@@ -187,7 +196,7 @@ def main():
 
     panels, gene_panels, exons_nirvana, g2t, build38 = load_files(args)
 
-    generate_bed(panels, gene_panels, exons_nirvana, g2t, build38)
+    generate_bed(panels, gene_panels, exons_nirvana, g2t, build38, args.output)
 
 
 if __name__ == "__main__":
