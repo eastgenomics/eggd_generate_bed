@@ -134,6 +134,7 @@ def generate_bed(
         - exons_nirvana (df): df of exons_nirvana file
         - g2t (df): df of genes2transcripts file
         - build38 (bool): check for build of exons nirvana used
+        - output_prefix (str): Prefix to be added if passed
 
     Returns: None
 
