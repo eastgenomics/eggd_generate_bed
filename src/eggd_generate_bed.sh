@@ -33,8 +33,12 @@ main() {
     # run in empty out dir incase a .bed file is used as input for uploading output bed file
     mkdir ./out && cd ./out
 
-    # generate bed file    
-    python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
+    # generate bed file
+    if [ ! -z ${output_file_prefix+x} ]; then
+        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" -o $output_file_prefix
+    else
+        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
+    fi
 
     bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")
 
