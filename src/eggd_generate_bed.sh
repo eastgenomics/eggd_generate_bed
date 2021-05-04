@@ -22,7 +22,7 @@ main() {
         # get the same ID from the first part of the file name
         sample=$(grep -oP "^[a-zA-Z0-9]*" <<< "$sample_file_name")
         # get the panel(s) from the sample entry in the manifest
-        panel=$(grep -w $sample ~/"$manifest_name" | cut -f 3 | sort | uniq | awk '{print}' ORS=', ')
+        panel=$(grep -w $sample ~/"$manifest_name" | cut -f 2 | sort | uniq | awk '{print}' ORS=', ')
 
         echo "Sample ID used: $sample"
         fi
