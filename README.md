@@ -19,7 +19,7 @@ This app requires the following files:
 AND also either:
 
 - the panel(s) and / or genes(s) to generate the bed for as a comma seperated string, with
-    genes being prefixed with an underscore (i.e. DDG2P, _CFTR)
+    genes being prefixed with an underscore (i.e. DDG2P, _HGNC:4834)
 
 OR
 
