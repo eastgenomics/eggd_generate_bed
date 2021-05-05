@@ -70,11 +70,10 @@ def load_files(args):
 
     with open(args.gene_panels) as gene_file:
         gene_panels = pd.read_csv(
-            gene_file, sep="\t", names=["panel", "id", "gene"],
+            gene_file, sep="\t", names=["clinical_ind", "panel", "gene"],
             dtype={"name": str, "id": str, "gene": str},
         )
-        gene_panels["panel"] = gene_panels["panel"].str.lower()
-        gene_panels["gene"] = gene_panels["gene"].str.upper()
+        gene_panels["clinical_ind"] = gene_panels["clinical_ind"].str.lower()
 
     with open(args.exons_nirvana) as exon_file:
         exons_nirvana = pd.read_csv(
@@ -114,7 +113,7 @@ def load_files(args):
             assert panel.upper().replace("_", "") in g2t["gene"].to_list(), """
                 Gene {} not present in genes2transcripts file""".format(panel)
         else:
-            assert panel.lower() in gene_panels["panel"].to_list(), """\
+            assert panel.lower() in gene_panels["clinical_ind"].to_list(), """\
                 Panel {} not present in gene panels file""".format(panel)
 
     return panels, gene_panels, exons_nirvana, g2t, build38
@@ -150,7 +149,7 @@ def generate_bed(
         else:
             genes.extend(
                 gene_panels.loc[
-                    gene_panels["panel"] == panel.lower()]["gene"].to_list()
+                    gene_panels["clinical_ind"] == panel.lower()]["gene"].to_list()
             )
 
     # ensure everything upper case (i.e. instances of lowercase 'orf')
