@@ -105,7 +105,7 @@ def load_files(args):
 
     # build list of panels from given string
     panels = args.panel
-    panels = list(filter(None, [x.strip() for x in panels.split(",")]))
+    panels = list(filter(None, [x.strip() for x in panels.split(";")]))
 
     # check passed genes in g2t, panels in gene panels
     for panel in panels:

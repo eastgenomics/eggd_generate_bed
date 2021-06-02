@@ -18,20 +18,20 @@ main() {
             echo "No panel or manifest and sample identifying file found. Exiting now."
             exit 1;
         else
-        # manifest and sample file given, get panel from manifest by sample name
-        # get the same ID from the first part of the file name
-        sample=$(grep -oP "^[a-zA-Z0-9]*" <<< "$sample_file_name")
+            # manifest and sample file given, get panel from manifest by sample name
+            # get the same ID from the first part of the file name
+            sample=$(grep -oP "^[a-zA-Z0-9]*" <<< "$sample_file_name")
 
-        # Check if the sample is present in the manifest
-        if ! grep -q $sample ~/"$manifest_name"; then
-            echo "Sample ${sample} was not found in the manifest ~/${manifest_name}"
-            exit 1
-        fi
+            # Check if the sample is present in the manifest
+            if ! grep -q $sample ~/"$manifest_name"; then
+                echo "Sample ${sample} was not found in the manifest ~/${manifest_name}"
+                exit 1
+            fi
 
-        # get the panel(s) from the sample entry in the manifest
-        panel=$(grep -w $sample ~/"$manifest_name" | cut -f 2 | sort | uniq | awk '{print}' ORS=', ')
+            # get the panel(s) from the sample entry in the manifest
+            panel=$(grep -w $sample ~/"$manifest_name" | cut -f 2 | sort | uniq | awk '{print}' ORS='; ')
 
-        echo "Sample ID used: $sample"
+            echo "Sample ID used: $sample"
         fi
     fi
 
