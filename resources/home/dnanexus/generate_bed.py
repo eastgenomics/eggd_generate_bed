@@ -177,7 +177,18 @@ def generate_bed(
     panels = [x.replace("/", "-") for x in panels]
 
     if not output_prefix:
-        output_prefix = "&&".join(panels)
+        # Add if statement to minimise output_prefix is long as 
+        # dnanexus cannot handle long filenames
+        length_panels = sum(len(i) for i in panels)
+        length_dividers = (len(panels) -1)*2
+        length_output = length_panels + length_dividers
+        print("Length of output prefix: " + str(length_output))
+
+        if length_output > 255:
+            output_prefix = "".join(panels[0:3])
+            output_prefix = output_prefix + "_" + str(len(panels)-3) + "others"
+        else:
+            output_prefix = "&&".join(panels)
 
     if build38:
         outfile = output_prefix + "_b38.bed"
