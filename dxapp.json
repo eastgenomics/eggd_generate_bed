@@ -1,10 +1,10 @@
 {
-  "name": "generate_bed_v1.1.3",
-  "title": "generate_bed_v1.1.3",
+  "name": "generate_bed_v1.1.4",
+  "title": "generate_bed_v1.1.4",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
   "properties": {
-  "githubRelease": "v1.1.3"
+  "githubRelease": "v1.1.4"
 },
   "inputSpec": [
     {
