@@ -187,7 +187,7 @@ def generate_bed(
         if length_output > 247:
             output_prefix = "".join(panels[0:3])
             output_prefix = output_prefix + "_+" + \
-                            str(len(panels)-3) + "others"
+            str(len(panels)-3) + "others"
         else:
             output_prefix = "&&".join(panels)
 
