@@ -177,7 +177,7 @@ def generate_bed(
     panels = [x.replace("/", "-") for x in panels]
 
     if not output_prefix:
-        # Add if statement to minimise output_prefix is long as 
+        # Add if statement to minimise long output_prefix as 
         # dnanexus cannot handle long filenames
         length_panels = sum(len(i) for i in panels)
         length_dividers = (len(panels) -1)*2
