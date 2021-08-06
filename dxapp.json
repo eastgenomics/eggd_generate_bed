@@ -1,10 +1,10 @@
 {
-  "name": "generate_bed_v1.1.4",
-  "title": "generate_bed_v1.1.4",
+  "name": "generate_bed_v1.1.5",
+  "title": "generate_bed_v1.1.5",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
   "properties": {
-  "githubRelease": "v1.1.4"
+  "githubRelease": "v1.1.5"
 },
   "inputSpec": [
     {
@@ -94,6 +94,13 @@
       "class": "string",
       "optional": true,
       "help": ""
+    },
+    {
+      "name": "flank",
+      "label": "Flank",
+      "class": "int",
+      "optional": true,
+      "help": "flank to apply to start and end of regions in bed file"
     }
   ],
   "outputSpec": [

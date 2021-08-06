@@ -47,6 +47,10 @@ def parse_args():
     parser.add_argument(
         '-o', '--output', default=None, help='Output file prefix'
     )
+    parser.add_argument(
+        '-f', '--flank', type=int,
+        help='bp flank to add to each bed file region (optional)'
+    )
 
     args = parser.parse_args()
 
@@ -120,7 +124,7 @@ def load_files(args):
 
 
 def generate_bed(
-    panels, gene_panels, exons_nirvana, g2t, build38, output_prefix
+    panels, gene_panels, exons_nirvana, g2t, build38, output_prefix, flank=None
 ):
     """
     Get panel genes from gene_panels for given panel, get transcript
@@ -172,6 +176,15 @@ def generate_bed(
     # get required columns for bed file
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
 
+    # apply flank to start and end if given
+    if flank:
+        print('Applying flank of {} bp'.format(flank))
+        # prevent start becoming -ve where flank is large than distance to 0
+        panel_bed.start = panel_bed.start.apply(
+            lambda x: x - flank if x - flank >= 0 else 0
+        )
+        panel_bed.end = panel_bed.end.apply(lambda x: x + flank)
+
     # write output bed file
     panels = [x.strip(" ").replace(" ", "_") for x in panels]
     panels = [x.replace("/", "-") for x in panels]
@@ -207,7 +220,10 @@ def main():
 
     panels, gene_panels, exons_nirvana, g2t, build38 = load_files(args)
 
-    generate_bed(panels, gene_panels, exons_nirvana, g2t, build38, args.output)
+    generate_bed(
+        panels, gene_panels, exons_nirvana, g2t, build38,
+        args.output, args.flank
+    )
 
 
 if __name__ == "__main__":
