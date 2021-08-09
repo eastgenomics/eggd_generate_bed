@@ -197,12 +197,16 @@ def generate_bed(
         length_output = length_panels + length_dividers
         print("Length of output prefix: " + str(length_output))
 
-        if length_output > 247:
+        if length_output > 240:
             output_prefix = "".join(panels[0:3])
             output_prefix = output_prefix + "_+" + \
                     str(len(panels)-3) + "others"
         else:
             output_prefix = "&&".join(panels)
+
+    if flank:
+        # add flank used to output name
+        output_prefix = output_prefix + "_{}bp".format(flank)
 
     if build38:
         outfile = output_prefix + "_b38.bed"
