@@ -170,6 +170,11 @@ def generate_bed(
     # get unique in case of duplicates
     transcripts = list(set(transcripts))
 
+    # check all selected transcripts in exons file
+    for transcript in transcripts:
+        assert transcript in exons_nirvana["transcript"].to_list(), """\
+        {} missing from exons file. Exiting now.""".format(transcript)
+
     # get exons from exons_nirvana for transcripts
     exons = exons_nirvana[exons_nirvana["transcript"].isin(transcripts)]
 

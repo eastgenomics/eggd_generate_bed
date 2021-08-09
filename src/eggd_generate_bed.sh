@@ -60,6 +60,13 @@ main() {
 
     bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")
 
+    # check if bed file is empty, exit if so
+    if [ ! -s $bed_file]; then
+        echo "empty bed file generated, exiting now."
+        dx-jobutil-report-error "Error: empty bed file generated"
+        exit 1
+    fi
+
     echo "Done, uploading BED file: $bed_file"
 
     output_file=$(dx upload "$bed_file" --brief)
