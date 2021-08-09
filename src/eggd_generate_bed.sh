@@ -52,7 +52,7 @@ main() {
     if [ ! -z ${flank+x} ]; then optional_args+=" -f $flank"; fi
 
     # generate bed file
-    if [ ! -z ${output_file_prefix+x} ]; then
+    if [ ! -z ${optional_args+x} ]; then
         python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" $optional_args
     else
         python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
