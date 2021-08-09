@@ -1,7 +1,7 @@
 #!/bin/bash
-# eggd_generate_bed 1.0.0
+# eggd_generate_bed
 
-set -euxo pipefail
+set -exo pipefail
 
 main() {
 
@@ -40,14 +40,32 @@ main() {
     # run in empty out dir incase a .bed file is used as input for uploading output bed file
     mkdir ./out && cd ./out
 
-    # generate bed file
+    # build optional args string for output prefix and flank
+    optional_args=""
+
     if [ ! -z ${output_file_prefix+x} ]; then
-        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" -o $output_file_prefix
+        # replace spaces with underscores if present
+        output_file_prefix=$(echo $output_file_prefix | sed 's/ /_/g')
+        optional_args+=" -o $output_file_prefix"
+    fi
+
+    if [ ! -z ${flank+x} ]; then optional_args+=" -f $flank"; fi
+
+    # generate bed file
+    if [ ! -z ${optional_args+x} ]; then
+        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" $optional_args
     else
         python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
     fi
 
     bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")
+
+    # check if bed file is empty, exit if so
+    if [ ! -s $bed_file]; then
+        echo "empty bed file generated, exiting now."
+        dx-jobutil-report-error "Error: empty bed file generated"
+        exit 1
+    fi
 
     echo "Done, uploading BED file: $bed_file"
 

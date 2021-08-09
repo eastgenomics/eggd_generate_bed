@@ -47,6 +47,10 @@ def parse_args():
     parser.add_argument(
         '-o', '--output', default=None, help='Output file prefix'
     )
+    parser.add_argument(
+        '-f', '--flank', type=int,
+        help='bp flank to add to each bed file region (optional)'
+    )
 
     args = parser.parse_args()
 
@@ -120,7 +124,7 @@ def load_files(args):
 
 
 def generate_bed(
-    panels, gene_panels, exons_nirvana, g2t, build38, output_prefix
+    panels, gene_panels, exons_nirvana, g2t, build38, output_prefix, flank=None
 ):
     """
     Get panel genes from gene_panels for given panel, get transcript
@@ -166,11 +170,25 @@ def generate_bed(
     # get unique in case of duplicates
     transcripts = list(set(transcripts))
 
+    # check all selected transcripts in exons file
+    for transcript in transcripts:
+        assert transcript in exons_nirvana["transcript"].to_list(), """\
+        {} missing from exons file. Exiting now.""".format(transcript)
+
     # get exons from exons_nirvana for transcripts
     exons = exons_nirvana[exons_nirvana["transcript"].isin(transcripts)]
 
     # get required columns for bed file
     panel_bed = exons[["chromosome", "start", "end", "transcript"]]
+
+    # apply flank to start and end if given
+    if flank:
+        print('Applying flank of {} bp'.format(flank))
+        # prevent start becoming -ve where flank is large than distance to 0
+        panel_bed.start = panel_bed.start.apply(
+            lambda x: x - flank if x - flank >= 0 else 0
+        )
+        panel_bed.end = panel_bed.end.apply(lambda x: x + flank)
 
     # write output bed file
     panels = [x.strip(" ").replace(" ", "_") for x in panels]
@@ -184,12 +202,16 @@ def generate_bed(
         length_output = length_panels + length_dividers
         print("Length of output prefix: " + str(length_output))
 
-        if length_output > 247:
+        if length_output > 240:
             output_prefix = "".join(panels[0:3])
             output_prefix = output_prefix + "_+" + \
                     str(len(panels)-3) + "others"
         else:
             output_prefix = "&&".join(panels)
+
+    if flank:
+        # add flank used to output name
+        output_prefix = output_prefix + "_{}bp".format(flank)
 
     if build38:
         outfile = output_prefix + "_b38.bed"
@@ -207,7 +229,10 @@ def main():
 
     panels, gene_panels, exons_nirvana, g2t, build38 = load_files(args)
 
-    generate_bed(panels, gene_panels, exons_nirvana, g2t, build38, args.output)
+    generate_bed(
+        panels, gene_panels, exons_nirvana, g2t, build38,
+        args.output, args.flank
+    )
 
 
 if __name__ == "__main__":
