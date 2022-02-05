@@ -58,14 +58,16 @@ main() {
         python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
     fi
 
-    bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")
+    output_bed=$(find . -name "*37*.bed" -o -name "*38*.bed")
 
     # check if bed file is empty, exit if so
-    if [ ! -s $bed_file]; then
+    if [ ! -s $output_bed]; then
         echo "empty bed file generated, exiting now."
         dx-jobutil-report-error "Error: empty bed file generated"
         exit 1
     fi
+
+    bedtools merge -i "$output_bed" > bed_file
 
     echo "Done, uploading BED file: $bed_file"
 
