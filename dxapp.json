@@ -1,6 +1,6 @@
 {
-  "name": "generate_bed_v1.1.5",
-  "title": "generate_bed_v1.1.5",
+  "name": "generate_bed_v1.2.0",
+  "title": "generate_bed_v1.2.0",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
   "properties": {
@@ -8,14 +8,21 @@
 },
   "inputSpec": [
     {
-      "name": "gene_panels",
-      "label": "Gemini gene_panels file (from 001_Reference)",
+      "name": "panel",
+      "label": "Panel name",
+      "class": "string",
+      "optional": true,
+      "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
+    },
+    {
+      "name": "exons_nirvana",
+      "label": "Exons nirvana file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
         {
           "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/dynamic_files/gene_panels/"
+          "path": "/annotation/b37/"
         }
       ],
       "patterns": [
@@ -40,14 +47,14 @@
       "help": ""
     },
     {
-      "name": "exons_nirvana",
-      "label": "Exons nirvana file (from 001_Reference)",
+      "name": "gene_panels",
+      "label": "Gemini gene_panels file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
         {
           "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/annotation/b37/"
+          "path": "/dynamic_files/gene_panels/"
         }
       ],
       "patterns": [
@@ -88,13 +95,6 @@
         "*"
       ],
       "help": ""
-    },
-    {
-      "name": "panel",
-      "label": "Panel name",
-      "class": "string",
-      "optional": true,
-      "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
     },
     {
       "name": "output_file_prefix",
