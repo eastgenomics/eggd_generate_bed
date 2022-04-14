@@ -45,8 +45,14 @@ def parse_args():
     )
 
     parser.add_argument(
+        '-a', '--additional_regions', default=None,
+        help='additional regions file'
+    )
+
+    parser.add_argument(
         '-o', '--output', default=None, help='Output file prefix'
     )
+
     parser.add_argument(
         '-f', '--flank', type=int,
         help='bp flank to add to each bed file region (optional)'
@@ -79,22 +85,6 @@ def load_files(args):
         )
         gene_panels["clinical_ind"] = gene_panels["clinical_ind"].str.lower()
 
-    with open(args.exons_nirvana) as exon_file:
-        exons_nirvana = pd.read_csv(
-            exon_file, sep="\t",
-            names=["chromosome", "start", "end", "gene", "transcript", "exon"],
-            dtype={
-                "chromosome": str, "start": int, "end": int, "gene": str,
-                "transcript": str, "exon": int
-            }
-        )
-
-    # check if exons nirvana 37 or 38 used to name output bed
-    if "38" in args.exons_nirvana:
-        build38 = True
-    else:
-        build38 = False
-
     with open(args.g2t) as g2t_file:
         g2t = pd.read_csv(
             g2t_file, sep="\t", names=[
@@ -106,6 +96,38 @@ def load_files(args):
             }
         )
         g2t["gene"] = g2t["gene"].str.upper()
+
+    with open(args.exons_nirvana) as exon_file:
+        exons_nirvana = pd.read_csv(
+            exon_file, sep="\t",
+            names=["chromosome", "start", "end", "gene", "transcript", "exon"],
+            dtype={
+                "chromosome": str, "start": int, "end": int, "gene": str,
+                "transcript": str, "exon": int
+            }
+        )
+
+    if args.additional_regions is not None:
+        with open(args.additional_regions) as extra_regions:
+            additional_regions = pd.read_csv(
+                extra_regions, sep="\t",
+                names=["chromosome", "start", "end", "gene", "transcript",
+                        "exon", "HGNC_ID"],
+                dtype={
+                    "chromosome": str, "start": int, "end": int, "gene": str,
+                    "transcript": str, "exon": int, "HGNC_ID": str
+                }
+            )
+    else:
+        additional_regions = pd.DataFrame(
+            columns=["chromosome", "start", "end", "gene", "transcript",
+                        "exon", "HGNC_ID"])
+
+    # check if exons nirvana 37 or 38 used to name output bed
+    if "38" in args.exons_nirvana:
+        build38 = True
+    else:
+        build38 = False
 
     # build list of panels from given string
     panels = args.panel
@@ -120,11 +142,12 @@ def load_files(args):
             assert panel.lower() in gene_panels["clinical_ind"].to_list(), """\
                 Panel {} not present in gene panels file""".format(panel)
 
-    return panels, gene_panels, exons_nirvana, g2t, build38
+    return panels, gene_panels, g2t, exons_nirvana, additional_regions, build38
 
 
 def generate_bed(
-    panels, gene_panels, exons_nirvana, g2t, build38, output_prefix, flank=None
+    panels, gene_panels, g2t, exons_nirvana, additional_regions, build38,
+    output_prefix, flank=None
 ):
     """
     Get panel genes from gene_panels for given panel, get transcript
@@ -151,9 +174,10 @@ def generate_bed(
             # single gene
             genes.append(panel.upper().strip("_"))
         else:
-            genes.extend(
-                gene_panels.loc[
-                    gene_panels["clinical_ind"] == panel.lower()]["gene"].to_list()
+            # panel
+            genes.extend(gene_panels.loc[
+                    gene_panels["clinical_ind"] == panel.lower(),
+                    "gene"].to_list()
             )
 
     # ensure everything upper case (i.e. instances of lowercase 'orf')
@@ -163,12 +187,10 @@ def generate_bed(
     genes = list(set(genes))
 
     # select transcript for each gene in panel genes from entry in g2t
-    transcripts = g2t[g2t["gene"].isin(genes)][
-        g2t["clinical_tx"] == "clinical_transcript"
-    ]["transcript"]
-
     # get unique in case of duplicates
-    transcripts = list(set(transcripts))
+    transcripts = g2t.loc[(g2t["gene"].isin(genes)) & 
+                        (g2t["clinical_tx"] == "clinical_transcript"),
+                        "transcript"].unique().tolist()
 
     # check all selected transcripts in exons file
     for transcript in transcripts:
@@ -176,10 +198,14 @@ def generate_bed(
         {} missing from exons file. Exiting now.""".format(transcript)
 
     # get exons from exons_nirvana for transcripts
-    exons = exons_nirvana[exons_nirvana["transcript"].isin(transcripts)]
+    exons = exons_nirvana.loc[exons_nirvana["transcript"].isin(transcripts),
+                            ["chromosome", "start", "end", "transcript"]]
+    extra_regions = additional_regions.loc[
+        additional_regions["HGNC_ID"].isin(genes),
+        ["chromosome", "start", "end", "transcript"]]
 
     # get required columns for bed file
-    panel_bed = exons[["chromosome", "start", "end", "transcript"]]
+    panel_bed = pd.concat([exons, extra_regions], ignore_index=True)
 
     # apply flank to start and end if given
     if flank:
@@ -223,14 +249,16 @@ def generate_bed(
 
 def main():
     """
-    Main function to generate bed file.
+        Main function to generate bed file.
     """
     args = parse_args()
 
-    panels, gene_panels, exons_nirvana, g2t, build38 = load_files(args)
+    panels, gene_panels, g2t, exons_nirvana, \
+        additional_regions, build38 = load_files(args)
 
     generate_bed(
-        panels, gene_panels, exons_nirvana, g2t, build38,
+        panels, gene_panels, g2t, exons_nirvana,
+        additional_regions, build38,
         args.output, args.flank
     )
 
