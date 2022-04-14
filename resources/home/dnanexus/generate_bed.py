@@ -1,10 +1,6 @@
 """
 Generates bed file of given panel(s) and/or gene(s) from genepanels,
 genes2transcripts and exons_nirvana file.
-
-Jethro Rainford
-200928
-last modified: 220414 Sophie Ratkai
 """
 import argparse
 import pandas as pd
@@ -108,7 +104,7 @@ def load_files(args):
             }
         )
 
-    if args.additional_regions is not None:
+    if args.additional_regions:
         with open(args.additional_regions) as extra_regions:
             additional_regions = pd.read_csv(
                 extra_regions, sep="\t",
@@ -120,9 +116,7 @@ def load_files(args):
                 }
             )
     else:
-        additional_regions = pd.DataFrame(
-            columns=["chromosome", "start", "end", "gene", "transcript",
-                        "exon", "gene_panel"])
+        additional_regions = None
 
     # check if exons nirvana 37 or 38 used to name output bed
     if "38" in args.exons_nirvana:
@@ -199,15 +193,18 @@ def generate_bed(
         {} missing from exons file. Exiting now.""".format(transcript)
 
     # get exons from exons_nirvana for transcripts
-    exons = exons_nirvana.loc[exons_nirvana["transcript"].isin(transcripts),
-                            ["chromosome", "start", "end", "transcript"]]
-    extra_regions = additional_regions.loc[
-        (additional_regions["gene_panel"].isin(panels)) | (
-            additional_regions["gene_panel"].isin(genes)),
-        ["chromosome", "start", "end", "transcript"]]
-
     # get required columns for bed file
-    panel_bed = pd.concat([exons, extra_regions], ignore_index=True)
+    panel_bed = exons_nirvana.loc[
+        exons_nirvana["transcript"].isin(transcripts),
+            ["chromosome", "start", "end", "transcript"]]
+
+    if additional_regions:
+        extra_regions = additional_regions.loc[
+            (additional_regions["gene_panel"].isin(panels)) | (
+                additional_regions["gene_panel"].isin(genes)),
+            ["chromosome", "start", "end", "transcript"]]
+        panel_bed = pd.concat([panel_bed, extra_regions], ignore_index=True)
+
 
     # apply flank to start and end if given
     if flank:
@@ -251,7 +248,7 @@ def generate_bed(
 
 def main():
     """
-        Main function to generate bed file.
+    Main function to generate bed file.
     """
     args = parse_args()
 
