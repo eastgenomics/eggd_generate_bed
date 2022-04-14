@@ -4,6 +4,7 @@ genes2transcripts and exons_nirvana file.
 
 Jethro Rainford
 200928
+last modified: 220414 Sophie Ratkai
 """
 import argparse
 import pandas as pd
@@ -112,16 +113,16 @@ def load_files(args):
             additional_regions = pd.read_csv(
                 extra_regions, sep="\t",
                 names=["chromosome", "start", "end", "gene", "transcript",
-                        "exon", "HGNC_ID"],
+                        "exon", "gene_panel"],
                 dtype={
                     "chromosome": str, "start": int, "end": int, "gene": str,
-                    "transcript": str, "exon": int, "HGNC_ID": str
+                    "transcript": str, "exon": int, "gene_panel": str
                 }
             )
     else:
         additional_regions = pd.DataFrame(
             columns=["chromosome", "start", "end", "gene", "transcript",
-                        "exon", "HGNC_ID"])
+                        "exon", "gene_panel"])
 
     # check if exons nirvana 37 or 38 used to name output bed
     if "38" in args.exons_nirvana:
@@ -188,7 +189,7 @@ def generate_bed(
 
     # select transcript for each gene in panel genes from entry in g2t
     # get unique in case of duplicates
-    transcripts = g2t.loc[(g2t["gene"].isin(genes)) & 
+    transcripts = g2t.loc[(g2t["gene"].isin(genes)) &
                         (g2t["clinical_tx"] == "clinical_transcript"),
                         "transcript"].unique().tolist()
 
@@ -201,7 +202,8 @@ def generate_bed(
     exons = exons_nirvana.loc[exons_nirvana["transcript"].isin(transcripts),
                             ["chromosome", "start", "end", "transcript"]]
     extra_regions = additional_regions.loc[
-        additional_regions["HGNC_ID"].isin(genes),
+        (additional_regions["gene_panel"].isin(panels)) | (
+            additional_regions["gene_panel"].isin(genes)),
         ["chromosome", "start", "end", "transcript"]]
 
     # get required columns for bed file
