@@ -183,9 +183,10 @@ def generate_bed(
 
     # select transcript for each gene in panel genes from entry in g2t
     # get unique in case of duplicates
-    transcripts = g2t.loc[(g2t["gene"].isin(genes)) &
-                        (g2t["clinical_tx"] == "clinical_transcript"),
-                        "transcript"].unique().tolist()
+    transcripts = g2t.loc[
+            (g2t["gene"].isin(genes)) &
+            (g2t["clinical_tx"] == "clinical_transcript"), "transcript"
+        ].unique().tolist()
 
     # check all selected transcripts in exons file
     for transcript in transcripts:
