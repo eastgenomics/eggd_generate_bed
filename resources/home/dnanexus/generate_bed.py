@@ -106,17 +106,14 @@ def load_files(args):
 
     if args.additional_regions:
         with open(args.additional_regions) as extra_regions:
-            additional_regions = pd.read_csv(
-                extra_regions, sep="\t",
-                names=["chromosome", "start", "end", "gene", "transcript",
-                        "exon", "gene_panel"],
-                dtype={
-                    "chromosome": str, "start": int, "end": int, "gene": str,
-                    "transcript": str, "exon": int, "gene_panel": str
-                }
-            )
+            additional_regions = pd.read_csv(extra_regions, sep="\t")
+            headers = ["chromosome", "start", "end", "gene_panel"]
+            assert all([x in additional_regions.columns for x in headers]), \
+                "Additional regions file doesn't have all the required headers"
     else:
-        additional_regions = None
+        additional_regions = pd.DataFrame(
+            columns=["chromosome", "start", "end", "gene_panel"]
+        )
 
     # check if exons nirvana 37 or 38 used to name output bed
     if "38" in args.exons_nirvana:
@@ -199,7 +196,7 @@ def generate_bed(
         exons_nirvana["transcript"].isin(transcripts),
             ["chromosome", "start", "end", "transcript"]]
 
-    if additional_regions:
+    if len(additional_regions) > 0:
         extra_regions = additional_regions.loc[
             (additional_regions["gene_panel"].isin(panels)) | (
                 additional_regions["gene_panel"].isin(genes)),

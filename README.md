@@ -28,7 +28,7 @@ OR
 - a sample identifying file (this is used to get the appropriate panel from the manifest for the sample, 
     this should be named X10000_ as the underscore is used to split and identify the sample). Any sample identifying file may be used (preferentially smaller to reduce download time).
 
-Optionally, additional regions may be provided for a gene or panel. A tsv file with columns `chromosome, start, end, custom string, custom int, gene_panel`. The last column should contain a HGNC gene ID or clinical indication which is used to select regions from this file for generating the bed file. Custom string may be a transcript ID and custom int may be an exon number, or equivalent.
+Optionally, additional regions may be provided for a gene or panel. A tsv file with column headers `chromosome, start, end, gene_panel` may be provided, where the last column should contain a HGNC gene ID or clinical indication which is used to select regions from this file for adding to the resulting bed file. Additional columns are allowed with unique headers.
 
 ## What does this app output?
 
