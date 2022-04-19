@@ -1,6 +1,6 @@
 {
-  "name": "generate_bed_v1.1.5",
-  "title": "generate_bed_v1.1.5",
+  "name": "generate_bed_v1.2.0",
+  "title": "generate_bed_v1.2.0",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
   "properties": {
@@ -8,21 +8,14 @@
 },
   "inputSpec": [
     {
-      "name": "panel",
-      "label": "Panel name",
-      "class": "string",
-      "optional": true,
-      "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
-    },
-    {
-      "name": "exons_nirvana",
-      "label": "Exons nirvana file (from 001_Reference)",
+      "name": "gene_panels",
+      "label": "Gemini gene_panels file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
         {
           "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/annotation/b37/"
+          "path": "/dynamic_files/gene_panels/"
         }
       ],
       "patterns": [
@@ -47,20 +40,28 @@
       "help": ""
     },
     {
-      "name": "gene_panels",
-      "label": "Gemini gene_panels file (from 001_Reference)",
+      "name": "exons_nirvana",
+      "label": "Exons nirvana file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
         {
           "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/dynamic_files/gene_panels/"
+          "path": "/annotation/b37/"
         }
       ],
       "patterns": [
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "additional_regions",
+      "label": "File containing chrom, start, end, *, gene/panel name.",
+      "class": "file",
+      "optional": true,
+      "patterns": ["*.tsv", "*.bed"],
+      "help": "Primarily used for generating panels for CNV annotation where additional regions are required"
     },
     {
       "name": "manifest",
@@ -87,6 +88,13 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "panel",
+      "label": "Panel name",
+      "class": "string",
+      "optional": true,
+      "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
     },
     {
       "name": "output_file_prefix",
@@ -123,8 +131,8 @@
     "interpreter": "bash",
     "file": "src/eggd_generate_bed.sh",
     "distribution": "Ubuntu",
-    "release": "16.04",
-    "version": "1"
+    "release": "20.04",
+    "version": "0"
   },
   "access": {
     "project": "CONTRIBUTE"

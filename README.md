@@ -7,7 +7,7 @@ Generate a BED file for given panel(s) and / or genes(s).
 ## What are typical use cases for this app?
 
 This app may be executed as a standalone app.
-This app was created for requiring bed files for Gemini panels to generate coverage reports from.
+This app was created for requiring bed files for panels to generate coverage reports from.
 
 ## What data are required for this app to run?
 
@@ -28,6 +28,7 @@ OR
 - a sample identifying file (this is used to get the appropriate panel from the manifest for the sample, 
     this should be named X10000_ as the underscore is used to split and identify the sample). Any sample identifying file may be used (preferentially smaller to reduce download time).
 
+Optionally, additional regions may be provided for a gene or panel. A tsv file with column headers `chromosome, start, end, gene_panel` may be provided, where the last column should contain a HGNC gene ID or clinical indication which is used to select regions from this file for adding to the resulting bed file. Additional columns are allowed with unique headers.
 
 ## What does this app output?
 
