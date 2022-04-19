@@ -1,11 +1,12 @@
 {
-  "name": "generate_bed_v1.2.0",
-  "title": "generate_bed_v1.2.0",
+  "name": "generate_bed",
+  "title": "generate_bed",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
+  "version": "1.2.0",
   "properties": {
-  "githubRelease": "v1.2.0"
-},
+    "githubRelease": "v1.2.0"
+  },
   "inputSpec": [
     {
       "name": "gene_panels",
@@ -123,17 +124,24 @@
     }
   ],
   "runSpec": {
+    "distribution": "Ubuntu",
+    "release": "20.04",
+    "version": "0",
+    "interpreter": "bash",
+    "file": "src/eggd_generate_bed.sh",
     "timeoutPolicy": {
       "*": {
         "hours": 1
       }
-    },
-    "interpreter": "bash",
-    "file": "src/eggd_generate_bed.sh",
-    "distribution": "Ubuntu",
-    "release": "20.04",
-    "version": "0"
+    }
   },
+  "developers":[
+    "user-sophier",
+    "org-emee_1"
+  ],
+  "authorizedUsers": [
+    "org-emee_1"
+  ],
   "access": {
     "project": "CONTRIBUTE"
   },
