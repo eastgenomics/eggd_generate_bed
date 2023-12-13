@@ -64,14 +64,25 @@ main() {
 
     bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")
 
+    size1=$(du "$bed_file" | cut -f1)
+    echo "file size of generated bed file after python script: ${size1}"
+    cat $bed_file
+
     # check if bed file is empty, exit if so
-    if [ ! -s $bed_file]; then
+    if [ ! -s $bed_file ]; then
         echo "empty bed file generated, exiting now."
         dx-jobutil-report-error "Error: empty bed file generated"
         exit 1
     else
+        size2=$(du "$bed_file" | cut -f1)
+        echo "file size of generated bed file before sort: ${size2}"
         sort -k1,1V -k2,2n $bed_file | tee "$bed_file" > /dev/null
     fi
+
+    size3=$(du "$bed_file" | cut -f1)
+    echo "file size of generated bed file after sort: ${size3}"
+    dx tag $DX_JOB_ID $size3
+    cat $bed_file
 
     echo "Done, uploading BED file: $bed_file"
 

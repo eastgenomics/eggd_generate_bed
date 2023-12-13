@@ -196,6 +196,8 @@ def generate_bed(
         exons_nirvana["transcript"].isin(transcripts),
             ["chromosome", "start", "end", "transcript"]]
 
+    print(f"Bed df generated from exons_nirvana: {panel_bed}")
+
     if len(additional_regions) > 0:
         extra_regions = additional_regions.loc[
             (additional_regions["gene_panel"].isin(panels)) | (
@@ -212,6 +214,8 @@ def generate_bed(
             lambda x: x - flank if x - flank >= 0 else 0
         )
         panel_bed.end = panel_bed.end.apply(lambda x: x + flank)
+
+        print(f"Bed df after adding flank: {panel_bed}")
 
     # write output bed file
     panels = [x.strip(" ").replace(" ", "_") for x in panels]
@@ -241,7 +245,11 @@ def generate_bed(
     else:
         outfile = output_prefix + "_b37.bed"
 
+    print(f"Bed df to write to file: {panel_bed}")
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
+
+    written = pd.read_csv(outfile, sep="\t")
+    print(f"Bed written to file and read back in: {written}")
 
 
 def main():
