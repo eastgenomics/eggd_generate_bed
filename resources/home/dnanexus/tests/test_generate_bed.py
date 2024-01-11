@@ -212,8 +212,8 @@ class TestGetTranscripts:
         # Genes "HGNC:4053" and "HGNC:329" are present in test_g2t and have
         # corresponding clinical transcripts in test_exons
         # (NM_005101.4 and NM_198576.4, respectively). "HGNC:11918" is present
-        # in test_g2t and has a corresponding  clinical transcript (NM_003327.4)
-        # however this transcript is missing from test_exons.
+        # in test_g2t and has a corresponding  clinical transcript
+        # (NM_003327.4) however this transcript is missing from test_exons.
         test_genes = ["HGNC:11918", "HGNC:4053", "HGNC:329"]
 
         with pytest.raises(
