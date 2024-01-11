@@ -58,11 +58,12 @@ def parse_args():
 
     return args
 
+
 def read_to_df(
     file_name: str, sep: str, col_names: list = None, case_change: dict = None
-)-> pd.DataFrame:
+) -> pd.DataFrame:
     """
-    Read input file (either .tsv or .csv) in as a dataframe and modify a 
+    Read input file (either .tsv or .csv) in as a dataframe and modify a
     column to either all upper or lower case letters.
 
     Args:
@@ -91,7 +92,7 @@ def read_to_df(
 
 def get_g_build(exons_file: str) -> str:
     """
-    Infer genome build from the exon file's name and return the appropriate 
+    Infer genome build from the exon file's name and return the appropriate
     file suffix to be used.
 
     Args:
@@ -290,7 +291,7 @@ def main():
         case_change={"column": "clinical_ind", "case": "lower"}
     )
     g2t = read_to_df(args.g2t, "\t", ["gene", "transcript",
-            "clinical_tx","canonical"], case_change={
+            "clinical_tx", "canonical"], case_change={
             "column": "gene", "case": "upper"
         }
     )
