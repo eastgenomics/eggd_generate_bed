@@ -54,12 +54,12 @@ main() {
     # generate bed file
     if [[ -n ${optional_args+x} ]]; then
         if [[ -n "$additional_regions" ]]; then
-            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" -a ~/"$additional_regions_name" $optional_args
+            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$genes2transcripts_name" -a ~/"$additional_regions_name" $optional_args
         else
-            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" $optional_args
+            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$genes2transcripts_name" $optional_args
         fi
     else
-        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
+        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$genes2transcripts_name"
     fi
 
     bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")

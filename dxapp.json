@@ -25,8 +25,8 @@
       "help": ""
     },
     {
-      "name": "nirvana_genes2transcripts",
-      "label": "Nirvana genes2transcripts file (from 001_Reference)",
+      "name": "genes2transcripts",
+      "label": "genes2transcripts file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
