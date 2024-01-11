@@ -5,6 +5,7 @@ genes2transcripts and exons file.
 import argparse
 import pandas as pd
 
+
 def parse_args():
     """
     Parse arguments given at cmd line.
@@ -204,7 +205,7 @@ def get_transcripts(
     genes_with_clin_transcripts = set(filtered_g2t["gene"].tolist())
 
     assert genes_with_clin_transcripts == set(genes), (
-        "The following genes do not have corresponding clincal transcripts "
+        "The following genes do not have corresponding clinical transcripts "
         f"in g2t: {set(genes).difference(genes_with_clin_transcripts)}"
     )
 
@@ -245,8 +246,10 @@ def generate_bed(
     # get exons from exons file for transcripts
     # get required columns for bed file
     panel_bed = exons.loc[
-        exons["transcript"].isin(transcripts),
-            ["chromosome", "start", "end", "transcript"]]
+        exons["transcript"].isin(transcripts), [
+            "chromosome", "start", "end", "transcript"
+        ]
+    ]
 
     if additional_regions is not None:
         extra_regions = additional_regions.loc[
@@ -279,7 +282,7 @@ def generate_bed(
         if length_output > 240:
             output_prefix = "".join(panels[0:3])
             output_prefix = output_prefix + "_+" + \
-                    str(len(panels)-3) + "others"
+                str(len(panels)-3) + "others"
         else:
             output_prefix = "&&".join(panels)
 
@@ -290,6 +293,7 @@ def generate_bed(
     outfile = output_prefix + g_build
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
+
 
 def main():
     """
@@ -315,7 +319,7 @@ def main():
     if args.additional_regions is not None:
         args.additional_regions = read_add_regions_file(
             args.additional_regions
-    )
+        )
 
     generate_bed(
         exons=exons,
@@ -326,6 +330,7 @@ def main():
         output_prefix=args.output,
         additional_regions=args.additional_regions,
         flank=args.flank)
+
 
 if __name__ == "__main__":
     main()
