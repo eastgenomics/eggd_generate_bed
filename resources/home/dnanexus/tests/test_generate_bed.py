@@ -16,7 +16,7 @@ TEST_DATA_DIR = (
 @pytest.fixture(name="setup_gene_panels")
 def read_in_gene_panels():
     """
-    Testing utility to mock output of reading in of test gene_panels file
+    Testing utility to mock output of reading in test gene_panels file
     Returns:
         pd.Dataframe: df of test_genepanels
     """
@@ -31,7 +31,7 @@ def read_in_gene_panels():
 @pytest.fixture(name="setup_g2t")
 def read_in_g2t():
     """
-    Testing utility to mock output of reading in of test g2t file
+    Testing utility to mock output of reading in test g2t file
     Returns:
         pd.Dataframe: df of test g2t file
     """
@@ -47,7 +47,7 @@ def read_in_g2t():
 @pytest.fixture(name="setup_exons")
 def read_in_exons():
     """
-    Testing utility to mock output of reading in of test_exons file
+    Testing utility to mock output of reading in test_exons file
     Returns:
         pd.Dataframe: df of test g2t file
     """
@@ -64,7 +64,7 @@ class TestReadToDf:
     def test_gene_panels_read_in_and_case_change(self, setup_gene_panels):
         """
         Method to test if the gene_panels file is read in and cased characters
-        in the specified column are changed to the specifed case"
+        in the specified column are changed to the specified case"
         """
         assert all(
             clind.islower() for clind in setup_gene_panels["clinical_ind"]), (
@@ -73,11 +73,11 @@ class TestReadToDf:
 
     def test_g2t_read_in_case_change(self, setup_g2t):
         """
-        Method to test if the gene_panels file is read in and cased characters
-        in the specified column are changed to the specifed case
+        Method to test if the g2t file is read in and cased characters
+        in the specified column are changed to the specified case
         """
         assert all(gene.isupper() for gene in setup_g2t["gene"]), (
-            "Not all cased characters where changed to specified case"
+            "Not all cased characters were changed to specified case"
         )
 
 
@@ -92,7 +92,7 @@ class TestGetGBuild:
                     "38_GRCh37_file.tsv", "37_GRCh37_file.tsv"]
 
         assert all([gb.get_g_build(fn) == "_b37.bed" for fn in files_37]), (
-            "Genome buiild was not correctly inferred from a filename"
+            "Genome build was not correctly inferred from a filename"
         )
 
     def test_get_38_genome_build(self):
@@ -104,7 +104,7 @@ class TestGetGBuild:
                     "37_GRCh38_file.tsv", "38_GRCh38_file.tsv"]
 
         assert all([gb.get_g_build(fn) == "_b38.bed" for fn in files_38]), (
-            "Genome buiild was not correctly inferred from a filename"
+            "Genome build was not correctly inferred from a filename"
         )
 
     def test_no_genome_build(self):
@@ -166,7 +166,7 @@ class TestGenesAndReadPanels:
 
 def test_add_regions_required_headers_present():
     """
-    Tests that an AssetionError is raised by read_add_regions() when the
+    Tests that an AssertionError is raised by read_add_regions() when the
     required headers are missing from the additional regions file
     """
     test_add_regions_file = f"{TEST_DATA_DIR}/test_add_regions.tsv"
@@ -212,7 +212,7 @@ class TestGetTranscripts:
         # Genes "HGNC:4053" and "HGNC:329" are present in test_g2t and have
         # corresponding clinical transcripts in test_exons
         # (NM_005101.4 and NM_198576.4, respectively). "HGNC:11918" is present
-        # in test_g2t and has a crresponding  clinical transcript (NM_003327.4)
+        # in test_g2t and has a corresponding  clinical transcript (NM_003327.4)
         # however this transcript is missing from test_exons.
         test_genes = ["HGNC:11918", "HGNC:4053", "HGNC:329"]
 
