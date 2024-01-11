@@ -71,7 +71,7 @@ class TestReadToDf:
                 "Not all cased characters were changed to specified case"
         )
 
-    def test_g2t_read_in_case_change(self,setup_g2t):
+    def test_g2t_read_in_case_change(self, setup_g2t):
         """
         Method to test if the gene_panels file is read in and cased characters
         in the specified column are changed to the specifed case
