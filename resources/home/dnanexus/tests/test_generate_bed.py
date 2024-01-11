@@ -27,6 +27,7 @@ def read_in_gene_panels():
     )
     return test_gene_panels
 
+
 @pytest.fixture(name="setup_g2t")
 def read_in_g2t():
     """
@@ -35,11 +36,13 @@ def read_in_g2t():
         pd.Dataframe: df of test g2t file
     """
     test_g2t_file = f"{TEST_DATA_DIR}/test_g2t.tsv"
-    test_g2t = gb.read_to_df(test_g2t_file, "\t", ["gene", "transcript",
-    "clinical_tx","canonical"], case_change={
-    "column": "gene", "case": "upper"}
+    test_g2t = gb.read_to_df(
+        test_g2t_file, "\t",
+        ["gene", "transcript", "clinical_tx", "canonical"],
+        case_change={"column": "gene", "case": "upper"}
     )
     return test_g2t
+
 
 @pytest.fixture(name="setup_exons")
 def read_in_exons():
@@ -50,14 +53,15 @@ def read_in_exons():
     """
     test_exons_file = f"{TEST_DATA_DIR}/test_exons.tsv"
     test_exons = gb.read_to_df(
-        test_exons_file, "\t", ["chromosome", "start", "end", "gene", "transcript",
-        "exon"]
+        test_exons_file, "\t", ["chromosome", "start", "end", "gene",
+                                "transcript", "exon"]
     )
     return test_exons
 
+
 class TestReadToDf:
     """Methods to test read_to_df() function from generate_bed.py"""
-    def test_gene_panels_read_in_and_case_change(self,setup_gene_panels):
+    def test_gene_panels_read_in_and_case_change(self, setup_gene_panels):
         """
         Method to test if the gene_panels file is read in and cased characters
         in the specified column are changed to the specifed case"
@@ -66,6 +70,7 @@ class TestReadToDf:
             clind.islower() for clind in setup_gene_panels["clinical_ind"]), (
                 "Not all cased characters were changed to specified case"
         )
+
     def test_g2t_read_in_case_change(self,setup_g2t):
         """
         Method to test if the gene_panels file is read in and cased characters
@@ -74,6 +79,7 @@ class TestReadToDf:
         assert all(gene.isupper() for gene in setup_g2t["gene"]), (
             "Not all cased characters where changed to specified case"
         )
+
 
 class TestGetGBuild:
     """Methods to test get_g_build() function from generate_bed.py"""
@@ -106,7 +112,7 @@ class TestGetGBuild:
         Method to test that a ValueError is raised if an invalid exons file
         name is passed"
         """
-        for name in ["build_thirty_seven.tsv","b38_file", "GRCH37.tsv",
+        for name in ["build_thirty_seven.tsv", "b38_file", "GRCH37.tsv",
                      "grch38.tsv", "G_R_C_h_37.tsv"]:
             with pytest.raises(ValueError):
                 gb.get_g_build(name)
@@ -120,6 +126,7 @@ class TestGetGBuild:
         with pytest.raises(ValueError):
             gb.get_g_build(ambig_file)
 
+
 class TestGenesAndReadPanels:
     """
     Methods to test the read_panels() function from generate_bed.py
@@ -127,12 +134,12 @@ class TestGenesAndReadPanels:
     def test_gene_not_in_g2t(self, setup_g2t, setup_gene_panels):
         """
         Method to test that the correct AssertionError is raised if a gene
-        provided as part of the "panel_list" input is not present in the g2t df.
+        provided as part of the "panel_list" input is not present in the g2t df
         """
         test_gene = "_HGNC:ID_NOT_IN_G2T"
 
         with pytest.raises(
-            AssertionError, match= "not present in genes2transcripts file"
+            AssertionError, match="not present in genes2transcripts file"
         ):
             gb.read_genes_and_panels(
                 panel_list=test_gene, g2t=setup_g2t,
@@ -143,26 +150,29 @@ class TestGenesAndReadPanels:
         self, setup_g2t, setup_gene_panels
     ):
         """
-        Method to test that the correct AssertionError is raised if a panel name
-        provided as part of the "panel_list" input is not present in the g2t df.
+        Method to test that the correct AssertionError is raised if a panel
+        name provided as part of the "panel_list" input is not present in the
+        g2t df.
         """
         test_panel = "NOT A PANEL"
         with pytest.raises(
-            AssertionError, match= "not present in gene panels file"
+            AssertionError, match="not present in gene panels file"
         ):
             gb.read_genes_and_panels(
                 panel_list=test_panel, g2t=setup_g2t,
                 gene_panels=setup_gene_panels
             )
 
+
 def test_add_regions_required_headers_present():
     """
-    Tests that an AssetionError is raised by read_add_regions() when the required
-    headers are missing from the additional regions file
+    Tests that an AssetionError is raised by read_add_regions() when the
+    required headers are missing from the additional regions file
     """
     test_add_regions_file = f"{TEST_DATA_DIR}/test_add_regions.tsv"
     with pytest.raises(AssertionError):
         gb.read_add_regions_file(test_add_regions_file)
+
 
 class TestGetTranscripts:
     """
@@ -186,8 +196,10 @@ class TestGetTranscripts:
                 exons=setup_exons
             )
         assert ("HGNC:4053" not in str(e_info.value) and
-            "HGNC:14825" in str(e_info.value) and
-            "HGNC:28208" in str(e_info.value)), "Incorrect error message given"
+                "HGNC:14825" in str(e_info.value) and
+                "HGNC:28208" in str(e_info.value)), (
+                    "Incorrect error message given"
+                )
 
     def test_transcript_missing_from_exons(
         self, setup_g2t, setup_exons
