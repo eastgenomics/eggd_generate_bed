@@ -182,6 +182,7 @@ def read_add_regions_file(add_regions_file: str) -> pd.DataFrame:
     )
     return additional_regions
 
+
 def get_transcripts(
     g2t: pd.DataFrame, genes: list, exons: pd.DataFrame
 ) -> list:
@@ -299,13 +300,13 @@ def main():
         args.gene_panels, "\t", ["clinical_ind", "panel", "gene"],
         case_change={"column": "clinical_ind", "case": "lower"}
     )
-    g2t = read_to_df(args.g2t, "\t", ["gene", "transcript",
-            "clinical_tx", "canonical"],
-            case_change={"column": "gene", "case": "upper"}
+    g2t = read_to_df(
+        args.g2t, "\t", ["gene", "transcript", "clinical_tx", "canonical"],
+        case_change={"column": "gene", "case": "upper"}
     )
     exons = read_to_df(
         args.exons, "\t", ["chromosome", "start", "end", "gene", "transcript",
-        "exon"]
+                           "exon"]
     )
     g_build = get_g_build(args.exons)
     panels, genes = read_genes_and_panels(args.panel, g2t, gene_panels)
