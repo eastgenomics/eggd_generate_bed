@@ -10,7 +10,7 @@ main() {
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ./
 
     # install python packages from included wheels
-    pip install packages/pytz-* packages/numpy-* packages/pandas-*
+    sudo -H python3 -m pip install --no-index --no-deps packages/*
 
     # check either panel name or manifest and sample file given
     if [ -z ${panel+x} ]; then
@@ -23,13 +23,13 @@ main() {
             sample=$(grep -oP "^[a-zA-Z0-9]*" <<< "$sample_file_name")
 
             # Check if the sample is present in the manifest
-            if ! grep -q $sample ~/"$manifest_name"; then
+            if ! grep -q "$sample" ~/"$manifest_name"; then
                 echo "Sample ${sample} was not found in the manifest ~/${manifest_name}"
                 exit 1
             fi
 
             # get the panel(s) from the sample entry in the manifest
-            panel=$(grep -w $sample ~/"$manifest_name" | cut -f 2 | sort | uniq | awk '{print}' ORS='; ')
+            panel=$(grep -w "$sample" ~/"$manifest_name" | cut -f 2 | sort | uniq | awk '{print}' ORS='; ')
 
             echo "Sample ID used: $sample"
         fi
@@ -43,34 +43,35 @@ main() {
     # build optional args string for output prefix and flank
     optional_args=""
 
-    if [ ! -z ${output_file_prefix+x} ]; then
+    if [[ -n ${output_file_prefix+x} ]]; then
         # replace spaces with underscores if present
-        output_file_prefix=$(echo $output_file_prefix | sed 's/ /_/g')
+        output_file_prefix=$(echo "$output_file_prefix" | sed 's/ /_/g')
         optional_args+=" -o $output_file_prefix"
     fi
 
-    if [ ! -z ${flank+x} ]; then optional_args+=" -f $flank"; fi
+    if [[ -n ${flank+x} ]]; then optional_args+=" -f $flank"; fi
 
     # generate bed file
-    if [ ! -z ${optional_args+x} ]; then
-        if [[ ! -z $additional_regions ]]; then
-            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" -a ~/"$additional_regions_name" $optional_args
+    if [[ -n ${optional_args+x} ]]; then
+        if [[ -n "$additional_regions" ]]; then
+            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" -a ~/"$additional_regions_name" $optional_args
         else
-            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" $optional_args
+            python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name" $optional_args
         fi
     else
-        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_nirvana_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
+        python3 ~/generate_bed.py -p "$panel" -e ~/"$exons_name" -g ~/"$gene_panels_name" -t ~/"$nirvana_genes2transcripts_name"
     fi
 
     bed_file=$(find . -name "*37*.bed" -o -name "*38*.bed")
 
     # check if bed file is empty, exit if so
-    if [ ! -s $bed_file]; then
+    if [ ! -s "$bed_file" ]; then
         echo "empty bed file generated, exiting now."
         dx-jobutil-report-error "Error: empty bed file generated"
         exit 1
     else
-        sort -k1,1V -k2,2n $bed_file | tee "$bed_file" > /dev/null
+        sort -k1,1V -k2,2n "$bed_file" -o"temp_bed.bed"
+        mv "temp_bed.bed" "$bed_file"
     fi
 
     echo "Done, uploading BED file: $bed_file"
