@@ -76,10 +76,12 @@ def read_to_df(
     Returns:
         pd.DataFrame: df of file.
     """
-    dtypes = {"name": str, "id": str, "gene": str, "transcript": str,
-             "clinical_tx": str, "canonical": str, "chromosome": str,
-             "start": int, "end": int, "exon": int
+    dtypes = {
+        "name": str, "id": str, "gene": str, "transcript": str,
+        "clinical_tx": str, "canonical": str, "chromosome": str,
+        "start": int, "end": int, "exon": int
     }
+
     df = pd.read_csv(file_name, sep=sep, names=col_names, dtype=dtypes)
 
     if case_change is not None:
@@ -89,6 +91,7 @@ def read_to_df(
             df[case_change["column"]] = df[case_change["column"]].str.lower()
 
     return df
+
 
 def get_g_build(exons_file: str) -> str:
     """
@@ -119,6 +122,7 @@ def get_g_build(exons_file: str) -> str:
         )
     return g_build
 
+
 def read_genes_and_panels(
     panel_list: str, g2t: pd.DataFrame, gene_panels: pd.DataFrame
 ):
@@ -139,7 +143,7 @@ def read_genes_and_panels(
     genes = []
     for panel in panels:
         if panel.startswith("_"):
-            gene = panel.upper().replace("_","")
+            gene = panel.upper().replace("_", "")
             assert gene in g2t["gene"].to_list(), (
                 f"Gene {panel} not present in genes2transcripts file"
             )
@@ -157,6 +161,7 @@ def read_genes_and_panels(
     genes = list(set(genes))
 
     return panels, genes
+
 
 def read_add_regions_file(add_regions_file: str) -> pd.DataFrame:
     """
@@ -178,7 +183,8 @@ def read_add_regions_file(add_regions_file: str) -> pd.DataFrame:
     return additional_regions
 
 def get_transcripts(
-    g2t: pd.DataFrame, genes: list, exons: pd.DataFrame) -> list:
+    g2t: pd.DataFrame, genes: list, exons: pd.DataFrame
+) -> list:
     """
     Get transcripts for each gene using g2t.
 
@@ -192,7 +198,7 @@ def get_transcripts(
     """
     filtered_g2t = g2t.loc[
         (g2t["gene"].isin(genes)) &
-        (g2t["clinical_tx"] == "clinical_transcript"),]
+        (g2t["clinical_tx"] == "clinical_transcript"), ]
 
     genes_with_clin_transcripts = set(filtered_g2t["gene"].tolist())
 
@@ -213,8 +219,11 @@ def get_transcripts(
 
     return transcripts
 
-def generate_bed(exons, transcripts, panels, genes, g_build,
-    output_prefix=None, additional_regions=None, flank=None):
+
+def generate_bed(
+    exons, transcripts, panels, genes, g_build,
+    output_prefix=None, additional_regions=None, flank=None
+):
     """
     Generate bed file from transcripts and exons.
 
@@ -291,9 +300,8 @@ def main():
         case_change={"column": "clinical_ind", "case": "lower"}
     )
     g2t = read_to_df(args.g2t, "\t", ["gene", "transcript",
-            "clinical_tx", "canonical"], case_change={
-            "column": "gene", "case": "upper"
-        }
+            "clinical_tx", "canonical"],
+            case_change={"column": "gene", "case": "upper"}
     )
     exons = read_to_df(
         args.exons, "\t", ["chromosome", "start", "end", "gene", "transcript",
@@ -304,7 +312,9 @@ def main():
     transcripts = get_transcripts(g2t, genes, exons)
 
     if args.additional_regions is not None:
-        args.additional_regions = read_add_regions_file(args.additional_regions)
+        args.additional_regions = read_add_regions_file(
+            args.additional_regions
+    )
 
     generate_bed(
         exons=exons,
