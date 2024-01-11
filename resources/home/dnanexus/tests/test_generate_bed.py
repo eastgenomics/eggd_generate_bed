@@ -12,12 +12,13 @@ TEST_DATA_DIR = (
     os.path.join(os.path.dirname(__file__), 'test_data')
 )
 
+
 @pytest.fixture(name="setup_gene_panels")
 def read_in_gene_panels():
     """
     Testing utility to mock output of reading in of test gene_panels file
     Returns:
-        pd.Dataframe: df of test_genepanels 
+        pd.Dataframe: df of test_genepanels
     """
     test_gene_panels_file = f"{TEST_DATA_DIR}/test_genepanels.tsv"
     test_gene_panels = gb.read_to_df(
@@ -59,7 +60,7 @@ class TestReadToDf:
     def test_gene_panels_read_in_and_case_change(self,setup_gene_panels):
         """
         Method to test if the gene_panels file is read in and cased characters
-        in the specified column are changed to the specifed case" 
+        in the specified column are changed to the specifed case"
         """
         assert all(
             clind.islower() for clind in setup_gene_panels["clinical_ind"]), (
@@ -102,8 +103,8 @@ class TestGetGBuild:
 
     def test_no_genome_build(self):
         """
-        Method to test that a ValueError is raised if an invalid exons file 
-        name is passed" 
+        Method to test that a ValueError is raised if an invalid exons file
+        name is passed"
         """
         for name in ["build_thirty_seven.tsv","b38_file", "GRCH37.tsv",
                      "grch38.tsv", "G_R_C_h_37.tsv"]:
@@ -125,7 +126,7 @@ class TestGenesAndReadPanels:
     """
     def test_gene_not_in_g2t(self, setup_g2t, setup_gene_panels):
         """
-        Method to test that the correct AssertionError is raised if a gene 
+        Method to test that the correct AssertionError is raised if a gene
         provided as part of the "panel_list" input is not present in the g2t df.
         """
         test_gene = "_HGNC:ID_NOT_IN_G2T"
@@ -142,7 +143,7 @@ class TestGenesAndReadPanels:
         self, setup_g2t, setup_gene_panels
     ):
         """
-        Method to test that the correct AssertionError is raised if a panel name 
+        Method to test that the correct AssertionError is raised if a panel name
         provided as part of the "panel_list" input is not present in the g2t df.
         """
         test_panel = "NOT A PANEL"
@@ -173,7 +174,7 @@ class TestGetTranscripts:
         """
         Method to test that an AssertionError is raised if not all genes have a
         corresponding clinical transcript and that the error message correctly
-        reports which genes have failed   
+        reports which genes have failed
         """
         # Genes "HGNC:14825" and "HGNC:28208" do not have corresponding
         # transcripts in the test_g2t file whereas "HGNC:4053" does
@@ -185,7 +186,7 @@ class TestGetTranscripts:
                 exons=setup_exons
             )
         assert ("HGNC:4053" not in str(e_info.value) and
-            "HGNC:14825" in str(e_info.value) and 
+            "HGNC:14825" in str(e_info.value) and
             "HGNC:28208" in str(e_info.value)), "Incorrect error message given"
 
     def test_transcript_missing_from_exons(
@@ -194,7 +195,7 @@ class TestGetTranscripts:
         """
         Method to test that an AssertionError is raised if not all clinical
         transcripts are present in the exons file and that the error message
-        correctly reports which transcripts have failed   
+        correctly reports which transcripts have failed
         """
         # Genes "HGNC:4053" and "HGNC:329" are present in test_g2t and have
         # corresponding clinical transcripts in test_exons
