@@ -74,6 +74,8 @@ def read_to_df(
         col_names (list): list of column names to be used as headers (optional)
         case_change (dict): dictionary specifying the column and desired
             case to which the column will be changed to upper/lower (optional)
+        required_headers (list): list of headers/column names whose presence
+            will be checked for in the df
 
     Raises:
         AssertionError if not all required file headers are present in the
