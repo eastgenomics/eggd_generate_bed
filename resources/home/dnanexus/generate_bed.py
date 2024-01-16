@@ -1,6 +1,6 @@
 """
 Generates bed file of given panel(s) and/or gene(s) from genepanels,
-genes2transcripts and exons_nirvana file.
+genes2transcripts and exons file.
 """
 import argparse
 import pandas as pd
@@ -8,7 +8,7 @@ import pandas as pd
 
 def parse_args():
     """
-    Pargse arguments given at cmd line.
+    Parse arguments given at cmd line.
 
     Args: None
 
@@ -17,20 +17,20 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser(
-        description='Generate BED file from genepanels and exons_nirvana file.'
+        description='Generate BED file from genepanels and exons file.'
     )
 
     parser.add_argument(
         '-p', '--panel',
         help="Name of panel(s) to generate bed for, for multiple panels these\
-            should be provided as a comma seperated list. Single genes should\
+            should be provided as a comma separated list. Single genes should\
             be given the same but prefixed with '_'\
             (i.e. --panel panelA, panelB, _gene1, _gene2 etc.)",
         required=True
     )
 
     parser.add_argument(
-        '-e', '--exons_nirvana', help='exons_nirvana file', required=True
+        '-e', '--exons', help='exons file', required=True
     )
 
     parser.add_argument(
@@ -51,7 +51,7 @@ def parse_args():
     )
 
     parser.add_argument(
-        '-f', '--flank', type=int,
+        '-f', '--flank', type=int, default=None,
         help='bp flank to add to each bed file region (optional)'
     )
 
@@ -60,153 +60,207 @@ def parse_args():
     return args
 
 
-def load_files(args):
+def read_to_df(
+    file_name: str, sep: str, col_names: list = None, case_change: dict = None,
+    required_headers: list = None
+) -> pd.DataFrame:
     """
-    Read in files.
+    Read input file (either .tsv or .csv) in as a dataframe and modify a
+    column to either all upper or lower case letters.
 
     Args:
-        - args (Namespace): object containing parsed arguments.
+        file_name (str): name of the .csv or .tsv file to be read
+        sep (str): separator or delimiter to be used to parse file
+        col_names (list): list of column names to be used as headers (optional)
+        case_change (dict): dictionary specifying the column and desired
+            case to which the column will be changed to upper/lower (optional)
+        required_headers (list): list of headers/column names whose presence
+            will be checked for in the df
+
+    Raises:
+        AssertionError if not all required file headers are present in the
+            additional regions file
 
     Returns:
-        - panels (list): list of panels to generate bed for
-        - gene_panels (df): df of gene_panels file
-        - exons_nirvana (df): df of exons_nirvana file
-        - g2t (df): df of genes2transcripts file
-        - build_38 (bool): check for build of exons nirvana used
+        pd.DataFrame: df of file.
     """
+    dtypes = {
+        "name": str, "id": str, "gene": str, "transcript": str,
+        "clinical_tx": str, "canonical": str, "chromosome": str,
+        "start": int, "end": int
+    }
 
-    with open(args.gene_panels) as gene_file:
-        gene_panels = pd.read_csv(
-            gene_file, sep="\t", names=["clinical_ind", "panel", "gene"],
-            dtype={"name": str, "id": str, "gene": str},
-        )
-        gene_panels["clinical_ind"] = gene_panels["clinical_ind"].str.lower()
+    df = pd.read_csv(file_name, sep=sep, names=col_names, dtype=dtypes)
 
-    with open(args.g2t) as g2t_file:
-        g2t = pd.read_csv(
-            g2t_file, sep="\t", names=[
-                "gene", "transcript", "clinical_tx", "canonical"
-            ],
-            dtype={
-                "gene": str, "transcript": str, "clinical_tx": str,
-                "canonical": str
-            }
-        )
-        g2t["gene"] = g2t["gene"].str.upper()
-
-    with open(args.exons_nirvana) as exon_file:
-        exons_nirvana = pd.read_csv(
-            exon_file, sep="\t",
-            names=["chromosome", "start", "end", "gene", "transcript", "exon"],
-            dtype={
-                "chromosome": str, "start": int, "end": int, "gene": str,
-                "transcript": str, "exon": int
-            }
-        )
-
-    if args.additional_regions:
-        with open(args.additional_regions) as extra_regions:
-            additional_regions = pd.read_csv(extra_regions, sep="\t")
-            headers = ["chromosome", "start", "end", "gene_panel"]
-            assert all([x in additional_regions.columns for x in headers]), \
-                "Additional regions file doesn't have all the required headers"
-    else:
-        additional_regions = pd.DataFrame(
-            columns=["chromosome", "start", "end", "gene_panel"]
-        )
-
-    # check if exons nirvana 37 or 38 used to name output bed
-    if "38" in args.exons_nirvana:
-        build38 = True
-    else:
-        build38 = False
-
-    # build list of panels from given string
-    panels = args.panel
-    panels = list(filter(None, [x.strip() for x in panels.split(";")]))
-
-    # check passed genes in g2t, panels in gene panels
-    for panel in panels:
-        if panel.startswith("_"):
-            assert panel.upper().replace("_", "") in g2t["gene"].to_list(), """
-                Gene {} not present in genes2transcripts file""".format(panel)
+    if case_change:
+        if case_change["case"] == "upper":
+            df[case_change["column"]] = df[case_change["column"]].str.upper()
         else:
-            assert panel.lower() in gene_panels["clinical_ind"].to_list(), """\
-                Panel {} not present in gene panels file""".format(panel)
+            df[case_change["column"]] = df[case_change["column"]].str.lower()
 
-    return panels, gene_panels, g2t, exons_nirvana, additional_regions, build38
+    if required_headers:
+        assert all([header in df.columns for header in required_headers]), (
+            "File doesn't have all the required headers"
+        )
+    return df
 
 
-def generate_bed(
-    panels, gene_panels, g2t, exons_nirvana, additional_regions, build38,
-    output_prefix, flank=None
-):
+def get_genome_build(exons_file: str) -> str:
     """
-    Get panel genes from gene_panels for given panel, get transcript
-    to use for each gene from g2t then generate bed from transcripts and
-    exons_nirvana.
+    Infer genome build from the exon file's name and return the appropriate
+    file suffix to be used.
 
     Args:
-        - panels (list): name of panel(s)
-        - gene_panels (df): df of gene_panels file
-        - exons_nirvana (df): df of exons_nirvana file
-        - g2t (df): df of genes2transcripts file
-        - build38 (bool): check for build of exons nirvana used
-        - output_prefix (str): Prefix to be added if passed
+        exons_file (str): exons file filename
 
-    Returns: None
+    Raises:
+        ValueError if ambiguous genome build found in the exon file's name
+        ValueError if no genome build is found in the exon file's name
 
-    Outputs: panel bed file
+    Returns:
+        str: genome build file suffix (either "_37.bed" or "_38.bed")
     """
-    # get list of panel genes for each panel
-    genes = []
 
+    if "GRCh37" in exons_file and "GRCh38" in exons_file:
+        raise ValueError(f"Ambiguous genome build in exon's file {exons_file}")
+
+    if "GRCh38" in exons_file:
+        genome_build = "_b38.bed"
+    elif "GRCh37" in exons_file:
+        genome_build = "_b37.bed"
+    else:
+        raise ValueError(
+            f"Genome build could not be inferred from {exons_file}"
+        )
+    return genome_build
+
+
+def read_genes_and_panels(
+    panel_list: str, g2t: pd.DataFrame, gene_panels: pd.DataFrame
+):
+    """
+    Reads in panels/genes and checks if they are in the
+    gene_panels/g2t file, respectively.
+
+    Args:
+        panel_list (str): semi-colon separated list of panels/genes
+        g2t (df): df of genes2transcripts file
+        gene_panels (df): df of gene_panels file
+
+    Raises:
+        AssertionError if a gene is not present in the genes2transcripts file
+        AssertionError if a panel is not present in the gene panels file
+
+    Returns:
+        panels (list): list of panels/genes to generate bed for
+        genes (list): list of unique genes across all specified panels/genes
+    """
+    panels = list(filter(None, [x.strip() for x in panel_list.split(";")]))
+    genes = []
     for panel in panels:
         if panel.startswith("_"):
-            # single gene
-            genes.append(panel.upper().strip("_"))
+            gene = panel.upper().replace("_", "")
+            assert gene in g2t["gene"].to_list(), (
+                f"Gene {panel} not present in genes2transcripts file"
+            )
+            genes.append(gene)
         else:
-            # panel
+            assert panel.lower() in gene_panels["clinical_ind"].to_list(), (
+                f"Panel {panel} not present in gene panels file"
+            )
             genes.extend(gene_panels.loc[
                     gene_panels["clinical_ind"] == panel.lower(),
                     "gene"].to_list()
             )
 
-    # ensure everything upper case (i.e. instances of lowercase 'orf')
     genes = [x.upper() for x in genes]
-
-    # get unique list of genes across panels
     genes = list(set(genes))
+
+    return panels, genes
+
+
+def get_transcripts(
+    g2t: pd.DataFrame, genes: list, exons: pd.DataFrame
+) -> list:
+    """
+    Get transcripts for each gene using g2t.
+
+    Args:
+        g2t (pd.DataFrame): df of genes2transcripts file
+        genes (list): unique list of genes from all specified panel(s)
+        exons (pd.DataFrame): df of exons file
+
+    Raises:
+        AssertionError if a selected gene does not have a corresponding
+            clinical transcript
+        AssertionError if selected transcript is missing from the exons file
+
+    Returns:
+        list: list of clinical transcripts corresponding to each gene
+    """
+    filtered_g2t = g2t.loc[
+        (g2t["gene"].isin(genes)) &
+        (g2t["clinical_tx"] == "clinical_transcript"), ]
+
+    genes_with_clin_transcripts = set(filtered_g2t["gene"].tolist())
+
+    assert genes_with_clin_transcripts == set(genes), (
+        "The following genes do not have corresponding clinical transcripts "
+        f"in g2t: {sorted(set(genes).difference(genes_with_clin_transcripts))}"
+    )
 
     # select transcript for each gene in panel genes from entry in g2t
     # get unique in case of duplicates
-    transcripts = g2t.loc[
-            (g2t["gene"].isin(genes)) &
-            (g2t["clinical_tx"] == "clinical_transcript"), "transcript"
-        ].unique().tolist()
+    transcripts = filtered_g2t["transcript"].unique().tolist()
 
     # check all selected transcripts in exons file
     for transcript in transcripts:
-        assert transcript in exons_nirvana["transcript"].to_list(), """\
-        {} missing from exons file. Exiting now.""".format(transcript)
+        assert transcript in exons["transcript"].to_list(), (
+            f"{transcript} missing from exons file. Exiting now."
+        )
 
-    # get exons from exons_nirvana for transcripts
+    return transcripts
+
+
+def generate_bed(
+    exons, transcripts, panels, genes, genome_build,
+    output_prefix=None, additional_regions=None, flank=None
+):
+    """
+    Generate bed file from transcripts and exons.
+
+    Args:
+        - panels (list): name of panel(s) or gene(s)
+        - genes (list): unique list of genes from all specified panel(s)
+        - transcripts (list): list of transcripts for given set of genes
+        - exons (df): df of exons file
+        - genome_build (str): file suffix either "_b37.bed" or "_b38.bed"
+        - output_prefix (str): Prefix to be added if passed (optional)
+        - additional_regions (df) : df of additional_regions file (optional)
+        - flank (int) : bp flank to add to each bed file region (optional)
+
+    Returns: None
+
+    Outputs: panel bed file
+    """
+    # get exons from exons file for transcripts
     # get required columns for bed file
-    panel_bed = exons_nirvana.loc[
-        exons_nirvana["transcript"].isin(transcripts),
-            ["chromosome", "start", "end", "transcript"]]
+    panel_bed = exons.loc[
+        exons["transcript"].isin(transcripts), [
+            "chromosome", "start", "end", "transcript"
+        ]
+    ]
 
-    if len(additional_regions) > 0:
+    if additional_regions:
         extra_regions = additional_regions.loc[
             (additional_regions["gene_panel"].isin(panels)) | (
                 additional_regions["gene_panel"].isin(genes)),
             ["chromosome", "start", "end", "transcript"]]
         panel_bed = pd.concat([panel_bed, extra_regions], ignore_index=True)
 
-
     # apply flank to start and end if given
     if flank:
-        print('Applying flank of {} bp'.format(flank))
+        print(f"Applying flank of {flank} bp")
         # prevent start becoming -ve where flank is large than distance to 0
         panel_bed.start = panel_bed.start.apply(
             lambda x: x - flank if x - flank >= 0 else 0
@@ -228,18 +282,15 @@ def generate_bed(
         if length_output > 240:
             output_prefix = "".join(panels[0:3])
             output_prefix = output_prefix + "_+" + \
-                    str(len(panels)-3) + "others"
+                str(len(panels)-3) + "others"
         else:
             output_prefix = "&&".join(panels)
 
     if flank:
         # add flank used to output name
-        output_prefix = output_prefix + "_{}bp".format(flank)
+        output_prefix = f"{output_prefix}_{flank}bp"
 
-    if build38:
-        outfile = output_prefix + "_b38.bed"
-    else:
-        outfile = output_prefix + "_b37.bed"
+    outfile = output_prefix + genome_build
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
@@ -249,17 +300,40 @@ def main():
     Main function to generate bed file.
     """
     args = parse_args()
+    gene_panels = read_to_df(
+        args.gene_panels, "\t", ["clinical_ind", "panel", "gene"],
+        case_change={"column": "clinical_ind", "case": "lower"}
+    )
+    g2t = read_to_df(
+        args.g2t, "\t", ["gene", "transcript", "clinical_tx", "canonical"],
+        case_change={"column": "gene", "case": "upper"}
+    )
+    exons = read_to_df(
+        args.exons, "\t", ["chromosome", "start", "end", "gene", "transcript",
+                           "exon"]
+    )
+    genome_build = get_genome_build(args.exons)
+    panels, genes = read_genes_and_panels(args.panel, g2t, gene_panels)
+    transcripts = get_transcripts(g2t, genes, exons)
 
-    panels, gene_panels, g2t, exons_nirvana, \
-        additional_regions, build38 = load_files(args)
+    if args.additional_regions:
+        args.additional_regions = read_to_df(
+            file_name=args.additional_regions,
+            sep="\t",
+            required_headers=["chromosome", "start", "end", "gene_panel",
+                              "transcript"]
+        )
 
     generate_bed(
-        panels, gene_panels, g2t, exons_nirvana,
-        additional_regions, build38,
-        args.output, args.flank
-    )
+        exons=exons,
+        transcripts=transcripts,
+        panels=panels,
+        genes=genes,
+        genome_build=genome_build,
+        output_prefix=args.output,
+        additional_regions=args.additional_regions,
+        flank=args.flank)
 
 
 if __name__ == "__main__":
-
     main()

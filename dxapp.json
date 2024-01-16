@@ -1,11 +1,11 @@
 {
-  "name": "generate_bed",
-  "title": "generate_bed",
+  "name": "eggd_generate_bed",
+  "title": "eggd_generate_bed",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "properties": {
-    "githubRelease": "v1.2.0"
+    "githubRelease": "v1.3.0"
   },
   "inputSpec": [
     {
@@ -25,8 +25,8 @@
       "help": ""
     },
     {
-      "name": "nirvana_genes2transcripts",
-      "label": "Nirvana genes2transcripts file (from 001_Reference)",
+      "name": "genes2transcripts",
+      "label": "genes2transcripts file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
@@ -41,8 +41,8 @@
       "help": ""
     },
     {
-      "name": "exons_nirvana",
-      "label": "Exons nirvana file (from 001_Reference)",
+      "name": "exons",
+      "label": "Exons file (from 001_Reference)",
       "class": "file",
       "optional": false,
       "suggestions": [
@@ -58,7 +58,7 @@
     },
     {
       "name": "additional_regions",
-      "label": "File containing chrom, start, end, *, gene/panel name.",
+      "label": "File containing chrom, start, end, transcript, *, gene/panel name.",
       "class": "file",
       "optional": true,
       "patterns": ["*.tsv", "*.bed"],
