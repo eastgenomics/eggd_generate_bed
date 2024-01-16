@@ -29,7 +29,7 @@ OR
     this should be named X10000_ as the underscore is used to split and identify the sample). Any sample identifying file may be used (preferentially smaller to reduce download time).
 
 ## Optional inputs:
-- an "additional regions" file may be provided for a gene or panel. A .tsv file with column headers `chromosome, start, end, transcript, gene_panel` may be provided, where the `gene_panel` column should contain a HGNC gene ID or clinical indication and the `transcript` column should contain the transcript's RefSeq ID (e.g. NM_001363686.2). The regions specified in this file will be included in the outputted bed file. Additional columns are allowed with unique headers.
+- an "additional regions" file may be provided for a gene or panel. A .tsv file with column headers `chromosome, start, end, gene_panel, transcript` may be provided, where the `gene_panel` column should contain a HGNC gene ID or clinical indication and the `transcript` column should contain a description of the corresponding region. The regions specified in this file will be included in the outputted bed file. Additional columns are allowed with unique headers.
 - an integer "flank" which is applied to the start and end of regions in bed file
 - an "output_file_prefix" which will prefix the name of the output file
 

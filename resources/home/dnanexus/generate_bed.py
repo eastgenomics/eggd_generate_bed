@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument(
         '-p', '--panel',
         help="Name of panel(s) to generate bed for, for multiple panels these\
-            should be provided as a comma seperated list. Single genes should\
+            should be provided as a comma separated list. Single genes should\
             be given the same but prefixed with '_'\
             (i.e. --panel panelA, panelB, _gene1, _gene2 etc.)",
         required=True
@@ -61,7 +61,8 @@ def parse_args():
 
 
 def read_to_df(
-    file_name: str, sep: str, col_names: list = None, case_change: dict = None
+    file_name: str, sep: str, col_names: list = None, case_change: dict = None,
+    required_headers: list = None
 ) -> pd.DataFrame:
     """
     Read input file (either .tsv or .csv) in as a dataframe and modify a
@@ -71,8 +72,12 @@ def read_to_df(
         file_name (str): name of the .csv or .tsv file to be read
         sep (str): separator or delimiter to be used to parse file
         col_names (list): list of column names to be used as headers (optional)
-        case_change (dict): dictionary specifying the column and desired case
-        to which the column will be changed to upper or lower (optional)
+        case_change (dict): dictionary specifying the column and desired
+            case to which the column will be changed to upper/lower (optional)
+
+    Raises:
+        AssertionError if not all required file headers are present in the
+            additional regions file
 
     Returns:
         pd.DataFrame: df of file.
@@ -80,21 +85,25 @@ def read_to_df(
     dtypes = {
         "name": str, "id": str, "gene": str, "transcript": str,
         "clinical_tx": str, "canonical": str, "chromosome": str,
-        "start": int, "end": int, "exon": int
+        "start": int, "end": int
     }
 
     df = pd.read_csv(file_name, sep=sep, names=col_names, dtype=dtypes)
 
-    if case_change is not None:
+    if case_change:
         if case_change["case"] == "upper":
             df[case_change["column"]] = df[case_change["column"]].str.upper()
         else:
             df[case_change["column"]] = df[case_change["column"]].str.lower()
 
+    if required_headers:
+        assert all([header in df.columns for header in required_headers]), (
+            "File doesn't have all the required headers"
+        )
     return df
 
 
-def get_g_build(exons_file: str) -> str:
+def get_genome_build(exons_file: str) -> str:
     """
     Infer genome build from the exon file's name and return the appropriate
     file suffix to be used.
@@ -114,14 +123,14 @@ def get_g_build(exons_file: str) -> str:
         raise ValueError(f"Ambiguous genome build in exon's file {exons_file}")
 
     if "GRCh38" in exons_file:
-        g_build = "_b38.bed"
+        genome_build = "_b38.bed"
     elif "GRCh37" in exons_file:
-        g_build = "_b37.bed"
+        genome_build = "_b37.bed"
     else:
         raise ValueError(
             f"Genome build could not be inferred from {exons_file}"
         )
-    return g_build
+    return genome_build
 
 
 def read_genes_and_panels(
@@ -135,6 +144,10 @@ def read_genes_and_panels(
         panel_list (str): semi-colon separated list of panels/genes
         g2t (df): df of genes2transcripts file
         gene_panels (df): df of gene_panels file
+
+    Raises:
+        AssertionError if a gene is not present in the genes2transcripts file
+        AssertionError if a panel is not present in the gene panels file
 
     Returns:
         panels (list): list of panels/genes to generate bed for
@@ -164,26 +177,6 @@ def read_genes_and_panels(
     return panels, genes
 
 
-def read_add_regions_file(add_regions_file: str) -> pd.DataFrame:
-    """
-    Reads in additional regions .tsv file as dataframe.
-
-    Args:
-        add_regions_file (str): filename of additional_regions
-
-    Returns:
-        additional_regions (df): df of additional_regions file
-    """
-    additional_regions = pd.read_csv(add_regions_file, sep="\t")
-    required_headers = [
-        "chromosome", "start", "end", "gene_panel", "transcript"
-    ]
-    assert all([x in additional_regions.columns for x in required_headers]), (
-        "Additional regions file doesn't have all the required headers"
-    )
-    return additional_regions
-
-
 def get_transcripts(
     g2t: pd.DataFrame, genes: list, exons: pd.DataFrame
 ) -> list:
@@ -194,6 +187,11 @@ def get_transcripts(
         g2t (pd.DataFrame): df of genes2transcripts file
         genes (list): unique list of genes from all specified panel(s)
         exons (pd.DataFrame): df of exons file
+
+    Raises:
+        AssertionError if a selected gene does not have a corresponding
+            clinical transcript
+        AssertionError if selected transcript is missing from the exons file
 
     Returns:
         list: list of clinical transcripts corresponding to each gene
@@ -206,7 +204,7 @@ def get_transcripts(
 
     assert genes_with_clin_transcripts == set(genes), (
         "The following genes do not have corresponding clinical transcripts "
-        f"in g2t: {set(genes).difference(genes_with_clin_transcripts)}"
+        f"in g2t: {sorted(set(genes).difference(genes_with_clin_transcripts))}"
     )
 
     # select transcript for each gene in panel genes from entry in g2t
@@ -223,7 +221,7 @@ def get_transcripts(
 
 
 def generate_bed(
-    exons, transcripts, panels, genes, g_build,
+    exons, transcripts, panels, genes, genome_build,
     output_prefix=None, additional_regions=None, flank=None
 ):
     """
@@ -234,7 +232,7 @@ def generate_bed(
         - genes (list): unique list of genes from all specified panel(s)
         - transcripts (list): list of transcripts for given set of genes
         - exons (df): df of exons file
-        - g_build (str): file suffix either "_b37.bed" or "_b38.bed"
+        - genome_build (str): file suffix either "_b37.bed" or "_b38.bed"
         - output_prefix (str): Prefix to be added if passed (optional)
         - additional_regions (df) : df of additional_regions file (optional)
         - flank (int) : bp flank to add to each bed file region (optional)
@@ -251,7 +249,7 @@ def generate_bed(
         ]
     ]
 
-    if additional_regions is not None:
+    if additional_regions:
         extra_regions = additional_regions.loc[
             (additional_regions["gene_panel"].isin(panels)) | (
                 additional_regions["gene_panel"].isin(genes)),
@@ -259,7 +257,7 @@ def generate_bed(
         panel_bed = pd.concat([panel_bed, extra_regions], ignore_index=True)
 
     # apply flank to start and end if given
-    if flank is not None:
+    if flank:
         print(f"Applying flank of {flank} bp")
         # prevent start becoming -ve where flank is large than distance to 0
         panel_bed.start = panel_bed.start.apply(
@@ -286,11 +284,11 @@ def generate_bed(
         else:
             output_prefix = "&&".join(panels)
 
-    if flank is not None:
+    if flank:
         # add flank used to output name
         output_prefix = f"{output_prefix}_{flank}bp"
 
-    outfile = output_prefix + g_build
+    outfile = output_prefix + genome_build
 
     panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
 
@@ -312,13 +310,16 @@ def main():
         args.exons, "\t", ["chromosome", "start", "end", "gene", "transcript",
                            "exon"]
     )
-    g_build = get_g_build(args.exons)
+    genome_build = get_genome_build(args.exons)
     panels, genes = read_genes_and_panels(args.panel, g2t, gene_panels)
     transcripts = get_transcripts(g2t, genes, exons)
 
-    if args.additional_regions is not None:
-        args.additional_regions = read_add_regions_file(
-            args.additional_regions
+    if args.additional_regions:
+        args.additional_regions = read_to_df(
+            file_name=args.additional_regions,
+            sep="\t",
+            required_headers=["chromosome", "start", "end", "gene_panel",
+                              "transcript"]
         )
 
     generate_bed(
@@ -326,7 +327,7 @@ def main():
         transcripts=transcripts,
         panels=panels,
         genes=genes,
-        g_build=g_build,
+        genome_build=genome_build,
         output_prefix=args.output,
         additional_regions=args.additional_regions,
         flank=args.flank)
