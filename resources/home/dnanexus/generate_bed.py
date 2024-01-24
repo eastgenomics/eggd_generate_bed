@@ -75,7 +75,7 @@ def read_to_df(
         case_change (dict): dictionary specifying the column and desired
             case to which the column will be changed to upper/lower (optional)
         required_headers (list): list of headers/column names whose presence
-            will be checked for in the df
+            will be checked for in the df (optional)
 
     Raises:
         AssertionError if not all required file headers are present in the
@@ -223,8 +223,8 @@ def get_transcripts(
 
 
 def generate_bed(
-    exons, transcripts, panels, genes, genome_build,
-    output_prefix=None, additional_regions=None, flank=None
+    exons, transcripts, panels, genes, genome_build, additional_regions, flank,
+    output_prefix=None
 ):
     """
     Generate bed file from transcripts and exons.
@@ -235,9 +235,10 @@ def generate_bed(
         - transcripts (list): list of transcripts for given set of genes
         - exons (df): df of exons file
         - genome_build (str): file suffix either "_b37.bed" or "_b38.bed"
-        - output_prefix (str): Prefix to be added if passed (optional)
         - additional_regions (df) : df of additional_regions file (optional)
         - flank (int) : bp flank to add to each bed file region (optional)
+        - output_prefix (str): Prefix to be added if passed (optional)
+
 
     Returns: None
 
@@ -251,7 +252,7 @@ def generate_bed(
         ]
     ]
 
-    if additional_regions:
+    if additional_regions is not None:
         extra_regions = additional_regions.loc[
             (additional_regions["gene_panel"].isin(panels)) | (
                 additional_regions["gene_panel"].isin(genes)),
