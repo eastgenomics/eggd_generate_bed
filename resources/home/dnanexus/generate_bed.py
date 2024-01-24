@@ -90,7 +90,8 @@ def read_to_df(
         "start": int, "end": int
     }
 
-    df = pd.read_csv(file_name, sep=sep, names=col_names, dtype=dtypes)
+    df = pd.read_csv(file_name, sep=sep, names=col_names, dtype=dtypes,
+                     usecols=col_names)
 
     if case_change:
         if case_change["case"] == "upper":
