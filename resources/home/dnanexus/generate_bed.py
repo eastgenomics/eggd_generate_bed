@@ -56,7 +56,7 @@ def parse_args():
     )
 
     parser.add_argument(
-        '-h', '--header_info', type=str, default=None,
+        '-i', '--header_info', type=str, default=None,
         help='description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1',required=True
     )
 
