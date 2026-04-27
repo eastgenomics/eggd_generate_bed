@@ -55,6 +55,11 @@ def parse_args():
         help='bp flank to add to each bed file region (optional)'
     )
 
+    parser.add_argument(
+        '-h', '--header_info', type=str, default=None,
+        help='description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1',required=True
+    )
+
     args = parser.parse_args()
 
     return args
@@ -224,7 +229,7 @@ def get_transcripts(
 
 
 def generate_bed(
-    exons, transcripts, panels, genes, genome_build, additional_regions, flank,
+    exons, transcripts, panels, genes, genome_build, additional_regions, flank, header_info,
     output_prefix=None
 ):
     """
@@ -294,7 +299,7 @@ def generate_bed(
 
     outfile = output_prefix + genome_build
 
-    panel_bed.to_csv(outfile, sep="\t", header=False, index=False)
+    panel_bed.to_csv(outfile, sep="\t", header=header_info, index=False)
 
 
 def main():
@@ -334,7 +339,8 @@ def main():
         genome_build=genome_build,
         output_prefix=args.output,
         additional_regions=args.additional_regions,
-        flank=args.flank)
+        flank=args.flank,
+        header_info=args.header_info)
 
 
 if __name__ == "__main__":
