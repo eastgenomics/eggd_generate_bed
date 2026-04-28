@@ -65,32 +65,6 @@
       "help": "Primarily used for generating panels for CNV annotation where additional regions are required"
     },
     {
-      "name": "manifest",
-      "label": "Bioinformatics manifest",
-      "class": "file",
-      "optional": true,
-      "suggestions": [
-        {
-          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/dynamic_files/BioinformaticManifest/"
-        }
-      ],
-      "patterns": [
-        "*"
-      ],
-      "help": "Used to get appropriate panel to generate bed file. Must also provide a sample identifying file (file name used to select panel)."
-    },
-    {
-      "name": "sample_file",
-      "label": "File containing sample id as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
-      "class": "file",
-      "optional": true,
-      "patterns": [
-        "*"
-      ],
-      "help": ""
-    },
-    {
       "name": "panel",
       "label": "Panel name",
       "class": "string",
