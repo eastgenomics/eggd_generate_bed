@@ -20,7 +20,9 @@ jobs:
           python-version: 3.8
 
       - name: Install dependencies
-        run: python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/*
+        run: python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/numpy-1.21.4-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl; 
+        python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/pytz-2021.3-py2.py3-none-any.whl;
+        python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/pandas-1.3.4-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
       - name: Run unit tests
         run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/bin --cov-report=term
