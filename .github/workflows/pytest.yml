@@ -1,0 +1,26 @@
+name: pytest
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: python3 -m pip install --no-index --no-deps packages/*
+
+      - name: Run unit tests
+        run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/bin --cov-report=term
