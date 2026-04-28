@@ -25,4 +25,4 @@ jobs:
         python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/pandas-1.3.4-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
       - name: Run unit tests
-        run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/bin --cov-report=term
+        run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/home/dnanexus --cov-report=term
