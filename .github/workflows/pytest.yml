@@ -20,7 +20,7 @@ jobs:
           python-version: 3.8
 
       - name: Install dependencies
-        run: python3 -m pip install --no-index --no-deps packages/*
+        run: python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/*
 
       - name: Run unit tests
         run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/bin --cov-report=term
