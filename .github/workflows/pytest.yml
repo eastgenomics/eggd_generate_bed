@@ -26,3 +26,6 @@ jobs:
 
       - name: Run unit tests
         run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/home/dnanexus --cov-report=term
+
+      - name: Run unit tests
+        run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/home/dnanexus --cov-report=term
