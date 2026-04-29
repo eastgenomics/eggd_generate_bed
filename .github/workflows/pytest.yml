@@ -34,8 +34,8 @@ jobs:
 
       - name: Run unit tests
         run: |
-          python -m pytest eggd_generate_bed/resources/home/dnanexus/tests \
-            --cov=eggd_generate_bed/home/dnanexus \
+          python -m pytest ./resources/home/dnanexus/tests \
+            --cov=./home/dnanexus \
             --cov-report=term
 
       
