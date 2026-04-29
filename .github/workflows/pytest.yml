@@ -20,7 +20,7 @@ jobs:
           python-version: 3.14
 
       - name: Install dependencies
-        run: python3 -m pip install --no-index --no-deps eggd_generate_bed/resources/home/dnanexus/packages/*.whl 
+        run: python3 -m pip install --no-index --no-deps ./resources/home/dnanexus/packages/*.whl 
 
       - name: Run unit tests
         run: python -m pytest eggd_generate_bed/resources/home/dnanexus/tests --cov=eggd_generate_bed/home/dnanexus --cov-report=term
