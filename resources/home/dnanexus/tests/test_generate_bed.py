@@ -309,7 +309,7 @@ class TestGenerateBed:
     Method to test headers are added as metadata and not column names 
     """
    
-    def test_header_in_first_line_bed(self):
+    def test_header_in_first_line_bed(self,setup_exons):
         """Method to test the genrate bed function can generate the same output as the expected be fille
         """
 
