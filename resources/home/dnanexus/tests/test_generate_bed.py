@@ -314,7 +314,7 @@ class TestGenerateBed:
         """
 
         # run genrate bed functon and save ouput to generate_bed_output_file
-        generate_bed_output_file=gb.generate_bed(exons=f"{TEST_DATA_DIR}/test_exons.tsv",
+        generate_bed_output_file=gb.generate_bed(exons=setup_exons,
         transcripts=["NM_001005484.2",
             "NM_001005484.2",
             "NM_001005221.2",
@@ -332,7 +332,7 @@ class TestGenerateBed:
             flank=400,
             header_info="#assembly=GRCh38,version=v2.0.0")
 
-
+        print(setup_exons)
         test_generate_bed_output_file=generate_bed_output_file
 
         # make expected bed file and save as test_expected_bed_file.bed
