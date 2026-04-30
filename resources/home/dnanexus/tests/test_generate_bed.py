@@ -9,7 +9,9 @@ sys.path.append(os.path.abspath(
     os.path.join(os.path.realpath(__file__), '../../')))
 
 import generate_bed as gb
-import cmp
+import filecmp
+import pandas as pd
+
 TEST_DATA_DIR = (
     os.path.join(os.path.dirname(__file__), 'test_data')
 )
@@ -312,23 +314,24 @@ class TestGenerateBed:
         """
 
         # run genrate bed functon and save ouput to generate_bed_output_file
-        generate_bed_output_file=gb.generate_bed(exons=exons,
-        transcripts=[ "NM_001005484.2",
-        "NM_001005484.2",
-        "NM_001005221.2",
-        "NM_001005277.1",
-        "NM_001385640.1",
-        "NM_001385641.1",
-        "NM_001385640.1",
-        "NM_001385641.1",
-        "NM_152486.4"],
-        panels="R100.3",
-        genes=["HGNC:1884","HGNC:2200","HGNC:2001" ],
-        genome_build="_b38.bed",
-        output_prefix"R100.3_Rare syndromic craniosynostosis or isolated multisuture synostosis_P	Rare syndromic craniosynostosis or isolated multisuture synostosis_4."
-        additional_regions=f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
-        flank=495,
-        header_info="#assembly=GRCh38,version=v2.0.0")
+        generate_bed_output_file=gb.generate_bed(exons=f"{TEST_DATA_DIR}/test_exons.tsv",
+        transcripts=["NM_001005484.2",
+            "NM_001005484.2",
+            "NM_001005221.2",
+            "NM_001005277.1",
+            "NM_001385640.1",
+            "NM_001385641.1",
+            "NM_001385640.1",
+            "NM_001385641.1",
+            "NM_152486.4"],
+            panels="R100.3",
+            genes=["HGNC:1884","HGNC:2200","HGNC:2001" ],
+            genome_build="_b38.bed",
+            output_prefix="R100.3_Rare syndromic craniosynostosis or isolated multisuture synostosis_P	Rare syndromic craniosynostosis or isolated multisuture synostosis_4.",
+            additional_regions=f"{TEST_DATA_DIR}/test_add_regions_pass.tsv",
+            flank=400,
+            header_info="#assembly=GRCh38,version=v2.0.0")
+
 
         test_generate_bed_output_file=generate_bed_output_file
 
@@ -356,7 +359,7 @@ class TestGenerateBed:
         ).astype({"chromosome": str, "start": "Int64", "end": "Int64", "transcript": str})
 
         with open("{TEST_DATA_DIR}/test_expected_bed_file.bed", 'w') as f:
-           f.write(f"{header_info}\n")        
+           f.write("#assembly=GRCh38,version=v2.0.0")
            expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
 
 
@@ -364,11 +367,7 @@ class TestGenerateBed:
         
 
         # compare expected bed file with bed file generate by gb.generate_bed()
-        res= filecmp.cmp(
-        r"f"{test_generate_bed_output_file}"",
-        r"f"{test_expceted_bed_file} ",
-        shallow=False
-        )       
+        res = filecmp.cmp(r"f'{test_generate_bed_output_file}'", r"f'{test_expected_bed_file}'", shallow=False)       
         if res:
             assert True , "Files are the same"
         else:
