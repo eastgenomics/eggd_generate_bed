@@ -302,7 +302,7 @@ class TestGetTranscripts:
                 exons=setup_exons
             )
 
-class test TestGenerateBed:
+class TestGenerateBed:
     """
     Method to test headers are added as metadata and not column names 
     """
