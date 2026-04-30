@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(
     os.path.join(os.path.realpath(__file__), '../../')))
 
 import generate_bed as gb
-
+import cmp
 TEST_DATA_DIR = (
     os.path.join(os.path.dirname(__file__), 'test_data')
 )
@@ -301,3 +301,76 @@ class TestGetTranscripts:
                 g2t=setup_g2t, genes=test_genes,
                 exons=setup_exons
             )
+
+class test TestGenerateBed:
+    """
+    Method to test headers are added as metadata and not column names 
+    """
+   
+    def test_header_in_first_line_bed():
+        """Method to test the genrate bed function can generate the same output as the expected be fille
+        """
+
+        # run genrate bed functon and save ouput to generate_bed_output_file
+        generate_bed_output_file=gb.generate_bed(exons=exons,
+        transcripts=[ "NM_001005484.2",
+        "NM_001005484.2",
+        "NM_001005221.2",
+        "NM_001005277.1",
+        "NM_001385640.1",
+        "NM_001385641.1",
+        "NM_001385640.1",
+        "NM_001385641.1",
+        "NM_152486.4"]
+        panels="R100.3"",
+        genes=["HGNC:1884","HGNC:2200","HGNC:2001" ],
+        genome_build=_"b38.bed",
+        output_prefix"R100.3_Rare syndromic craniosynostosis or isolated multisuture synostosis_P	Rare syndromic craniosynostosis or isolated multisuture synostosis_4."
+        additional_regions=f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
+        flank=495,
+        header_info="#assembly=GRCh38,version=v2.0.0")
+
+        test_generate_bed_output_file=generate_bed_output_file
+
+        # make expected bed file and save as test_expected_bed_file.bed
+        
+        columns=["chrom","start","end","transcript"]
+        expected_bed_file= pd.DataFrame(
+        [
+        ["4","1793434","1794543","NM_001005484.2"],
+        ["4","1798753","1800023","NM_001005484.2"],
+        ["4","1799246","1800312","NM_001005221.2"],
+        ["4","1800866","1802036","NM_001005277.1"],
+        ["4","1801119","1802243","NM_001385640.1"],
+        ["4","1801334","1802525","NM_001385641.1"],
+        ["4","1803191","1804336","NM_001385640.1"],
+        ["4","1803829","1805020","NM_001385641.1"],
+        ["4","1804323","1805469","NM_152486.4"],
+        ["3","10142733","1014305","HGNC:12687","VHL_cryptic"],
+        ["7","117479051","117480089","HGNC:1884","CFTR_upstream"],
+        ["12","48004326","48005321","HGNC:2200","COL2A1_upstream"],
+        ["15","32700719","32701046","HGNC:2001","GREM1_upstream1"],
+        ["15","32709293","32709829","HGNC:2001","GREM1_upstream2"],
+        ["15","32712146","32712680","HGNC:2001","GREM1_upstream3"],
+        ] ,columns=columns
+        ).astype({"chromosome": str, "start": "Int64", "end": "Int64", "transcript": str})
+
+        with open("{TEST_DATA_DIR}/test_expected_bed_file.bed", 'w') as f:
+           f.write(f"{header_info}\n")        
+           expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
+
+
+        test_expected_bed_file=f"{TEST_DATA_DIR}/test_expected_bed_file.bed"
+        
+
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res= filecmp.cmp(
+        r"f"{test_generate_bed_output_file}"",
+        r"f"{test_expceted_bed_file} ",
+        shallow=False
+        )       
+        if res:
+            assert True , "Files are the same"
+        else:
+            print("Files differ.")
+

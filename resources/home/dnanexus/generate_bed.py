@@ -299,7 +299,10 @@ def generate_bed(
 
     outfile = output_prefix + genome_build
 
-    panel_bed.to_csv(outfile, sep="\t", header=header_info, index=False)
+    with open(outfile, 'w') as f:
+        if header_info:
+            f.write(f"{header_info}\n")
+        panel_bed.to_csv(f, sep="\t", header=False, index=False)
 
 
 def main():
