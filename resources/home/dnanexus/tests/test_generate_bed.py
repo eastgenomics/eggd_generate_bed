@@ -321,7 +321,7 @@ class TestGenerateBed:
         "NM_001385641.1",
         "NM_001385640.1",
         "NM_001385641.1",
-        "NM_152486.4"]
+        "NM_152486.4"],
         panels="R100.3",
         genes=["HGNC:1884","HGNC:2200","HGNC:2001" ],
         genome_build="_b38.bed",
