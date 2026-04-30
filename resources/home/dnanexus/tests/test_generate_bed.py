@@ -62,6 +62,21 @@ def read_in_exons():
     )
     return test_exons
 
+@pytest.fixture(name="setup_addtional_regions")
+def read_in_additional_regions():
+    """
+    Testing utility to mock output of reading in test additional regions file
+    Returns:
+        pd.Dataframe: df of test_add_regions_pass
+    """
+    # need a case change?
+    test_add_regions_pass_file = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
+    test_add_regions_pass = gb.read_to_df(
+            test_add_regions_pass_file,"\t", ["chromosome","start","end", "gene_panel", "transcript" , "exon"],
+            case_change={"column": "clinical_ind", "case": "lower"})
+    return test_add_regions_pass
+
+
 
 class TestReadToDf:
     """Methods to test read_to_df() function from generate_bed.py"""
@@ -309,7 +324,7 @@ class TestGenerateBed:
     Method to test headers are added as metadata and not column names 
     """
    
-    def test_header_in_first_line_bed(self,setup_exons):
+    def test_header_in_first_line_bed(self,setup_exons, setup_addtional_regions):
         """Method to test the genrate bed function can generate the same output as the expected be fille
         """
 
@@ -328,7 +343,7 @@ class TestGenerateBed:
             genes=["HGNC:1884","HGNC:2200","HGNC:2001" ],
             genome_build="_b38.bed",
             output_prefix="R100.3_Rare syndromic craniosynostosis or isolated multisuture synostosis_P	Rare syndromic craniosynostosis or isolated multisuture synostosis_4.",
-            additional_regions=f"{TEST_DATA_DIR}/test_add_regions_pass.tsv",
+            additional_regions=setup_addtional_regions,
             flank=400,
             header_info="#assembly=GRCh38,version=v2.0.0")
 
