@@ -92,7 +92,7 @@ def read_to_df(
     dtypes = {
         "name": str, "id": str, "gene": str, "transcript": str,
         "clinical_tx": str, "canonical": str, "chromosome": str,
-        "start": int, "end": int , "exon" : int
+        "start": int, "end": int
     }
 
     df = pd.read_csv(file_name, sep=sep, names=col_names, dtype=dtypes,
