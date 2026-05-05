@@ -103,7 +103,7 @@ class TestReadToDf:
             assert stdout[1:] == column_as_strings, (
                 "Column in dataframe incorrectly read in"
             )
-        return(output_df.dtypes)
+        return([output_df.dtypes,command, stdout,column_as_strings])
     def test_gene_panels_read_in_and_case_change(self, setup_gene_panels):
         """
         Method to test if the gene_panels file is read in and cased characters
@@ -371,7 +371,7 @@ TestReadToDf_object.test_read_add_regions_correctly()
       #  ["15",32709293,32709829,"HGNC:2001","GREM1_upstream2"],
       #  ["15",32712146,32712680,"HGNC:2001","GREM1_upstream3"],
       #  ] ,columns=columns
-      #  ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
+      #  ).astype({"chromosome": str, "start": int64 ,"end": int64, "transcript": str})
 
        # with open("{TEST_DATA_DIR}/test_expected_bed_file.bed", 'w') as f:
         #   f.write("#assembly=GRCh38,version=v2.0.0")
