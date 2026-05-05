@@ -377,7 +377,7 @@ class TestGetTranscripts:
          #  expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
 
 
-        test_expected_bed_file=f"{TEST_DATA_DIR}/test_expected_bed_file.bed"
+        #test_expected_bed_file=f"{TEST_DATA_DIR}/test_expected_bed_file.bed"
         
 
         # compare expected bed file with bed file generate by gb.generate_bed()
