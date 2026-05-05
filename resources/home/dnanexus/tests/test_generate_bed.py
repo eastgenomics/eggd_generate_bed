@@ -90,7 +90,7 @@ class TestReadToDf:
             required_headers=["chromosome", "start", "end", "gene_panel",
                               "transcript"]
         )
-        print(output_df.dtypes)
+        
         for column_idx in range(len(output_df.columns)):
             command = f"awk -F '\\t' '{{print ${column_idx+1}}}' {test_file}"
             output = subprocess.run(
@@ -103,7 +103,7 @@ class TestReadToDf:
             assert stdout[1:] == column_as_strings, (
                 "Column in dataframe incorrectly read in"
             )
-
+        return(output_df.dtypes)
     def test_gene_panels_read_in_and_case_change(self, setup_gene_panels):
         """
         Method to test if the gene_panels file is read in and cased characters
