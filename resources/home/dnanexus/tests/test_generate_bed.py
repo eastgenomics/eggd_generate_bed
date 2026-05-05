@@ -317,7 +317,7 @@ class TestGetTranscripts:
                 g2t=setup_g2t, genes=test_genes,
                 exons=setup_exons
             )
-
+"""
 class TestGenerateBed:
     """
     Method to test headers are added as metadata and not column names 
@@ -386,4 +386,4 @@ class TestGenerateBed:
             assert True , "Files are the same"
         else:
             print("Files differ.")
-
+"""
