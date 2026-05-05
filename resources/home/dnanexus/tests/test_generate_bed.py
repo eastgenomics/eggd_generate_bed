@@ -317,7 +317,8 @@ class TestGetTranscripts:
                 g2t=setup_g2t, genes=test_genes,
                 exons=setup_exons
             )
-
+TestReadToDf_object = TestReadToDf()
+TestReadToDf_object.test_read_add_regions_correctly()
 #class TestGenerateBed:
    # """
    # Method to test headers are added as metadata and not column names 
