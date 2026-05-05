@@ -62,18 +62,18 @@ def read_in_exons():
     )
     return test_exons
 
-@pytest.fixture(name="setup_addtional_regions")
-def read_in_additional_regions():
-    """
-    Testing utility to mock output of reading in test additional regions file
-    Returns:
-        pd.Dataframe: df of test_add_regions_pass
-    """
+#@pytest.fixture(name="setup_addtional_regions")
+#def read_in_additional_regions():
+#    """
+#    Testing utility to mock output of reading in test additional regions file
+#    Returns:
+#        pd.Dataframe: df of test_add_regions_pass
+#    """
     # need a case change?
-    test_add_regions_pass_file = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
-    test_add_regions_pass = gb.read_to_df(
-            test_add_regions_pass_file,"\t", ["chromosome","start","end", "gene_panel", "transcript"])
-    return test_add_regions_pass
+#    test_add_regions_pass_file = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
+ #   test_add_regions_pass = gb.read_to_df(
+  #          test_add_regions_pass_file,"\t", ["chromosome","start","end", "gene_panel", "transcript"])
+  #  return test_add_regions_pass
 
 
 
