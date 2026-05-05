@@ -72,7 +72,7 @@ def read_in_additional_regions():
     # need a case change?
     test_add_regions_pass_file = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
     test_add_regions_pass = gb.read_to_df(
-            test_add_regions_pass_file,"\t", ["chromosome","start","end", "gene_panel", "transcript" , "exon"])
+            test_add_regions_pass_file,"\t", ["chromosome","start","end", "gene_panel", "transcript"])
     return test_add_regions_pass
 
 
