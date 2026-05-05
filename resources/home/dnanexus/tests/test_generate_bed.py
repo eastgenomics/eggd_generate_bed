@@ -370,7 +370,7 @@ class TestGenerateBed:
         ["15",32709293,32709829,"HGNC:2001","GREM1_upstream2"],
         ["15",32712146,32712680,"HGNC:2001","GREM1_upstream3"],
         ] ,columns=columns
-        ).astype({"chromosome": str, "start": int "end": int, "transcript": str})
+        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
 
         with open("{TEST_DATA_DIR}/test_expected_bed_file.bed", 'w') as f:
            f.write("#assembly=GRCh38,version=v2.0.0")
