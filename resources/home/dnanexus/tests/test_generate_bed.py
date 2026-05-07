@@ -62,18 +62,22 @@ def read_in_exons():
     )
     return test_exons
 
-#@pytest.fixture(name="setup_addtional_regions")
-#def read_in_additional_regions():
-#    """
-#    Testing utility to mock output of reading in test additional regions file
-#    Returns:
-#        pd.Dataframe: df of test_add_regions_pass
-#    """
+@pytest.fixture(name="setup_addtional_regions")
+def read_in_additional_regions():
+    """
+    Testing utility to mock output of reading in test additional regions file
+    Returns:
+    pd.Dataframe: df of test_add_regions_pass
+    """
     # need a case change?
-#    test_add_regions_pass_file = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
- #   test_add_regions_pass = gb.read_to_df(
-  #          test_add_regions_pass_file,"\t", ["chromosome","start","end", "gene_panel", "transcript"])
-  #  return test_add_regions_pass
+    test_file_addtional_regions = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
+    output_df_addtional_regions = gb.read_to_df(
+    file_name=test_file_addtional_regions,
+    sep="\t",
+    required_headers=["chromosome", "start", "end", "gene_panel",
+                              "transcript"]
+    )
+    return output_df_addtional_regions
 
 
 
@@ -103,7 +107,11 @@ class TestReadToDf:
             assert stdout[1:] == column_as_strings, (
                 "Column in dataframe incorrectly read in"
             )
-        return([output_df.dtypes,command, stdout,column_as_strings])
+            print(column_idx)
+            print(command)
+            print(stdout)
+            print(column_as_strings)
+        
     def test_gene_panels_read_in_and_case_change(self, setup_gene_panels):
         """
         Method to test if the gene_panels file is read in and cased characters
@@ -317,43 +325,67 @@ class TestGetTranscripts:
                 g2t=setup_g2t, genes=test_genes,
                 exons=setup_exons
             )
-TestReadToDf_object = TestReadToDf()
-TestReadToDf_object.test_read_add_regions_correctly()
-#class TestGenerateBed:
-   # """
-   # Method to test headers are added as metadata and not column names 
-   # """
-   
- #   def test_header_in_first_line_bed(self,setup_exons, setup_addtional_regions):
-        #Method to test the genrate bed function can generate the same output as the expected be fille
+
+class TestGenerateBed:
+    """
+    Method to test headers are added as metadata and not column names 
+    """
+    def read_in_exons_file(self, test_exons_file):
+        """
+        Testing utility to mock output of reading in test_exons file
+        Returns:
+            pd.Dataframe: df of test exons file
+        """
+        test_exons = gb.read_to_df(
+            test_exons_file, "\t", ["chromosome", "start", "end", "gene",
+                                "transcript", "exon"]
+        )
+        return test_exons
+
+    def read_in_additonal_regions_file(self, test_add_regions_file):
+        """
+        Testing utility to mock output of reading in test additonal regions file 
+        Returns:
+            pd.Dataframe: df of test addtional regions file
+        """
+        test_add_regions = gb.read_to_df(
+        test_add_regions_file, "\t", ["chromosome","start","end","gene_panel","transcript", "exon"]
+        )
+        return test_add_regions
+
+
+ #   def test_header_in_first_line_bed(self,setup_exons,setup_addtional_regions):
+ #       """
+ #       Method to test the genrate bed function can generate the same output as the expected be file 
         
-
+  #      """
+        
         # run genrate bed functon and save ouput to generate_bed_output_file
-      #  generate_bed_output_file=gb.generate_bed(exons=setup_exons,
-     #   transcripts=["NM_001005484.2",
-     #       "NM_001005484.2",
-     #       "NM_001005221.2",
-     #       "NM_001005277.1",
-     #       "NM_001385640.1",
-     #       "NM_001385641.1",
-     #       "NM_001385640.1",
-     #       "NM_001385641.1",
-     #       "NM_152486.4"],
-     #       panels="R100.3",
-     #       genes=["HGNC:1884","HGNC:2200","HGNC:2001" ],
-     #       genome_build="_b38.bed",
-     #       output_prefix="R100.3_Rare syndromic craniosynostosis or isolated multisuture synostosis_P	Rare syndromic craniosynostosis or isolated multisuture synostosis_4.",
-     #       additional_regions=setup_addtional_regions,
-     #       flank=400,
-     #       header_info="#assembly=GRCh38,version=v2.0.0")
-
-      #  print(setup_exons)
-      #  test_generate_bed_output_file=generate_bed_output_file
+  #      generate_bed_output_df=gb.generate_bed(exons=setup_exons,
+  #      transcripts=["NM_005101.4",
+ #                    "NM_198576.4", 
+  #                   "NM_003327.4", 
+ #                    "NM_080605.4"],
+ #           panels=["C1.1_Inherited Stroke"],
+  #          genes=["HGNC:12269",
+  #                 "HGNC:2202",
+  #                 "HGNC:2203",
+  #                 "HGNC:4296",
+  #                 "HGNC:7883",
+  #                 "HGNC:9251",
+  #                 "HGNC:9476"],
+  #          genome_build="_b38.bed",
+  #          output_prefix="C1.1_Inherited Stroke",
+  #          flank=400,
+  #          header_info="#assembly=GRCh38,version=v2.0.0",
+  #          additional_regions=None)
+        
+   #     print(generate_bed_output_df)
 
         # make expected bed file and save as test_expected_bed_file.bed
         
-       # columns=["chrom","start","end","transcript"]
-       # expected_bed_file= pd.DataFrame(
+      #  columns=["chrom","start","end","transcript"]
+      #  expected_bed_file= pd.DataFrame(
       #  [
       #  ["4",1793434,1794543,"NM_001005484.2"],
       #  ["4",1798753,1800023,"NM_001005484.2"],
