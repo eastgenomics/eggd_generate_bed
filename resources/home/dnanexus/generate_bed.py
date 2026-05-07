@@ -302,7 +302,7 @@ def generate_bed(
     with open(outfile, 'w') as f:
         if header_info:
             f.write(f"{header_info}\n")
-        panel_bed.to_csv(f, sep="\t", header=False, index=False)
+            panel_bed.to_csv(f, sep="\t", header=False, index=False)
 
 
 def main():
