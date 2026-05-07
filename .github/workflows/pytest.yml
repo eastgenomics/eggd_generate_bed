@@ -35,7 +35,7 @@ jobs:
       - name: Run unit tests
         run: |
           python -m pytest ./resources/home/dnanexus/tests \
-            --cov=./home/dnanexus \
+            --cov=./resources/home/dnanexus/tests \
             --cov-report=term
 
       
