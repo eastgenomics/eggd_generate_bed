@@ -62,7 +62,7 @@ df_gene_panels=pd.DataFrame([
 df_gene_panels.to_csv('resources/home/dnanexus/tests/test_data/test_gene_panels_generate_bed_v1.3.1.tsv', sep="\t",header=False,index=False)
 
 # create a test additonal regions file- dtypes for required columns are defined in the generated_bed.py script 
-column=["chromosome", "start", "end", "gene_panel","transcript","exon"]
+column=["chromosome", "start", "end", "gene_panel","transcript","exons"]
 df_addtional_regions=pd.DataFrame([
          ["1",110011,110090,"HGNC:10000","NM_080050.4","1"],
          ["1",100010,100200,"HGNC:12600","NM_010000.2","11"],
