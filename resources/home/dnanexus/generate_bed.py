@@ -57,7 +57,7 @@ def parse_args():
 
     parser.add_argument(
         '-i', '--header_info', type=str, default=None,
-        help='description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1',required=True
+        help='description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1', required=True
     )
 
     args = parser.parse_args()
@@ -243,6 +243,7 @@ def generate_bed(
         - genome_build (str): file suffix either "_b37.bed" or "_b38.bed"
         - additional_regions (df) : df of additional_regions file (optional)
         - flank (int) : bp flank to add to each bed file region (optional)
+        - header_info (str): header line content for the BED file (e.g. #assembly=GRCh38,version=v1.0.1)
         - output_prefix (str): Prefix to be added if passed (optional)
 
 
