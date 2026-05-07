@@ -4,7 +4,6 @@ import sys
 import subprocess
 import pytest
 
-
 sys.path.append(os.path.abspath(
     os.path.join(os.path.realpath(__file__), '../../')))
 
@@ -62,25 +61,6 @@ def read_in_exons():
     )
     return test_exons
 
-@pytest.fixture(name="setup_addtional_regions")
-def read_in_additional_regions():
-    """
-    Testing utility to mock output of reading in test additional regions file
-    Returns:
-    pd.Dataframe: df of test_add_regions_pass
-    """
-    # need a case change?
-    test_file_addtional_regions = f"{TEST_DATA_DIR}/test_add_regions_pass.tsv"
-    output_df_addtional_regions = gb.read_to_df(
-    file_name=test_file_addtional_regions,
-    sep="\t",
-    required_headers=["chromosome", "start", "end", "gene_panel",
-                              "transcript"]
-    )
-    return output_df_addtional_regions
-
-
-
 class TestReadToDf:
     """Methods to test read_to_df() function from generate_bed.py"""
     def test_read_add_regions_correctly(self):
@@ -107,10 +87,6 @@ class TestReadToDf:
             assert stdout[1:] == column_as_strings, (
                 "Column in dataframe incorrectly read in"
             )
-            print(column_idx)
-            print(command)
-            print(stdout)
-            print(column_as_strings)
         
     def test_gene_panels_read_in_and_case_change(self, setup_gene_panels):
         """
@@ -332,91 +308,167 @@ class TestGenerateBed:
     """
     def read_in_exons_file(self, test_exons_file):
         """
-        Testing utility to mock output of reading in test_exons file
-        Returns:
-            pd.Dataframe: df of test exons file
-        """
-        test_exons = gb.read_to_df(
-            test_exons_file, "\t", ["chromosome", "start", "end", "gene",
-                                "transcript", "exon"]
-        )
-        return test_exons
-
-    def read_in_additonal_regions_file(self, test_add_regions_file):
-        """
         Testing utility to mock output of reading in test additonal regions file 
         Returns:
             pd.Dataframe: df of test addtional regions file
         """
-        test_add_regions = gb.read_to_df(
-        test_add_regions_file, "\t", ["chromosome","start","end","gene_panel","transcript", "exon"]
-        )
-        return test_add_regions
-
-
- #   def test_header_in_first_line_bed(self,setup_exons,setup_addtional_regions):
- #       """
- #       Method to test the genrate bed function can generate the same output as the expected be file 
+      
+        test_exons=gb.read_to_df(
+            test_exons_file, "\t", ["chromosome", "start", "end", "gene",
+                                "transcript", "exon"])
         
-  #      """
+        return test_exons
+
+    def test_header_in_first_line_bed(self):
+        """
+        Method to test the genrate bed function can generate the same output as the expected be file 
         
+        """
         # run genrate bed functon and save ouput to generate_bed_output_file
-  #      generate_bed_output_df=gb.generate_bed(exons=setup_exons,
-  #      transcripts=["NM_005101.4",
- #                    "NM_198576.4", 
-  #                   "NM_003327.4", 
- #                    "NM_080605.4"],
- #           panels=["C1.1_Inherited Stroke"],
-  #          genes=["HGNC:12269",
-  #                 "HGNC:2202",
-  #                 "HGNC:2203",
-  #                 "HGNC:4296",
-  #                 "HGNC:7883",
-  #                 "HGNC:9251",
-  #                 "HGNC:9476"],
-  #          genome_build="_b38.bed",
-  #          output_prefix="C1.1_Inherited Stroke",
-  #          flank=400,
-  #          header_info="#assembly=GRCh38,version=v2.0.0",
-  #          additional_regions=None)
-        
-   #     print(generate_bed_output_df)
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                    "NM_010000.2",	
+                    "NM_010000.3",	
+                    "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+                "HGNC:12600",
+	            "HGNC:44506",
+	            "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_header",
+        flank=None,
+        header_info="#assembly=GRCh38,version=v2.0.0",
+        additional_regions=None)
 
+       
         # make expected bed file and save as test_expected_bed_file.bed
         
-      #  columns=["chrom","start","end","transcript"]
-      #  expected_bed_file= pd.DataFrame(
-      #  [
-      #  ["4",1793434,1794543,"NM_001005484.2"],
-      #  ["4",1798753,1800023,"NM_001005484.2"],
-      #  ["4",1799246,1800312,"NM_001005221.2"],
-      #  ["4",1800866,1802036,"NM_001005277.1"],
-      #  ["4",1801119,1802243,"NM_001385640.1"],
-      #  ["4",1801334,1802525,"NM_001385641.1"],
-      #  ["4",1803191,1804336,"NM_001385640.1"],
-      #  ["4",1803829,1805020,"NM_001385641.1"],
-      #  ["4",1804323,1805469,"NM_152486.4"],
-      #  ["3",10142733,1014305,"HGNC:12687","VHL_cryptic"],
-      #  ["7",117479051,117480089,"HGNC:1884","CFTR_upstream"],
-      #  ["12",48004326,48005321,"HGNC:2200","COL2A1_upstream"],
-      #  ["15",32700719,32701046,"HGNC:2001","GREM1_upstream1"],
-      #  ["15",32709293,32709829,"HGNC:2001","GREM1_upstream2"],
-      #  ["15",32712146,32712680,"HGNC:2001","GREM1_upstream3"],
-      #  ] ,columns=columns
-      #  ).astype({"chromosome": str, "start": int64 ,"end": int64, "transcript": str})
+        columns=["chromosome","start","end","transcript"]
+        expected_bed_file= pd.DataFrame(
+        [
+        ["1",110001,110005,"NM_080050.4"],
+        ["1",100001,100020,"NM_010000.2"],
+        ["1",100001,100190,"NM_010000.3"],
+        ["1",289070,289078,"NM_181758.1"]
+        ] ,columns=columns
+        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
 
-       # with open("{TEST_DATA_DIR}/test_expected_bed_file.bed", 'w') as f:
-        #   f.write("#assembly=GRCh38,version=v2.0.0")
-         #  expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
+        with open(f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_header.bed", 'w') as f:
+           f.write("#assembly=GRCh38,version=v2.0.0\n")
+           expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
 
 
-        #test_expected_bed_file=f"{TEST_DATA_DIR}/test_expected_bed_file.bed"
-        
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_header.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_header_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
-       # res = filecmp.cmp(r"f'{test_generate_bed_output_file}'", r"f'{test_expected_bed_file}'", shallow=False)       
-       # if res:
-       #     assert True , "Files are the same"
-       # else:
-       #     print("Files differ.")
-#"""
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False) , ("Files are not the same")
+
+    
+    def test_header_in_first_line_bed_with_flank(self):
+        """
+        Method to test the genrate bed function can generate the same output as the expected be file with flank
+        
+        """
+        # run genrate bed functon and save ouput to generate_bed_output_file
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                    "NM_010000.2",	
+                    "NM_010000.3",	
+                    "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+                "HGNC:12600",
+	            "HGNC:44506",
+	            "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_header_and_flank",
+        flank=400,
+        header_info="#assembly=GRCh38,version=v2.0.0",
+        additional_regions=None)
+
+       
+        # make expected bed file and save as test_expected_bed_file.bed
+        
+        columns=["chromosome","start","end","transcript"]
+        expected_bed_file= pd.DataFrame(
+        [
+        ["1",109601,110405,"NM_080050.4"],
+        ["1",99601,100420,"NM_010000.2"],
+        ["1",99601,100590,"NM_010000.3"],
+        ["1",288670,289478,"NM_181758.1"]
+        ] ,columns=columns
+        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
+
+        with open(f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_header_and_flank.bed", 'w') as f:
+           f.write("#assembly=GRCh38,version=v2.0.0\n")
+           expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
+
+
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_header_and_flank.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_header_and_flank_400bp_b38.bed"
+
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False) , ("Files are not the same")
+
+    def test_header_in_first_line_bed_with_addtional_regions(self):
+        """
+        Method to test the genrate bed function can generate the same output as the expected be file with addtional regions
+        
+        """
+        # make addtional regions dataframe
+        add_regions_file=f"{TEST_DATA_DIR}/test_addtional_regions_generate_bed_v1.3.1.tsv"
+        additional_regions=gb.read_to_df(
+        file_name=add_regions_file,
+        sep="\t",
+        required_headers=["chromosome", "start", "end", "gene_panel","transcript"] )
+
+        # run genrate bed functon and save output to generate_bed_output_file
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                    "NM_010000.2",	
+                    "NM_010000.3",	
+                    "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+                "HGNC:12600",
+	            "HGNC:44506",
+	            "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_header_and_additional_regions",
+        flank=None,
+        header_info="#assembly=GRCh38,version=v2.0.0",
+        additional_regions=additional_regions)
+
+       
+        # make expected bed file and save as test_expected_bed_file.bed
+        
+        columns=["chromosome","start","end","transcript"]
+        expected_bed_file= pd.DataFrame(
+        [
+        ["1",110001,110005,"NM_080050.4"],
+        ["1",100001,100020,"NM_010000.2"],
+        ["1",100001,100190,"NM_010000.3"],
+        ["1",289070,289078,"NM_181758.1"],
+        ["1",110011,110090,"NM_080050.4"],
+        ["1",100010,100200,"NM_010000.2"]
+        ] ,columns=columns
+        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
+
+        with open(f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_header_and_additional_regions.bed", 'w') as f:
+           f.write("#assembly=GRCh38,version=v2.0.0\n")
+           expected_bed_file.to_csv(f, sep="\t", header=False, index=False)
+
+
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_header_and_additional_regions.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_header_and_additional_regions_b38.bed"
+
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False) , ("Files are not the same")
