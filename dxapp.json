@@ -68,7 +68,7 @@
       "name": "panel",
       "label": "Panel name",
       "class": "string",
-      "optional": true,
+      "optional": false,
       "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May specify panel here."
     },
     {
