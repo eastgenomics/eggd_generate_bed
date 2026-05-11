@@ -84,6 +84,13 @@
       "class": "int",
       "optional": true,
       "help": "flank to apply to start and end of regions in bed file"
+    },
+    {
+      "name": "header_info",
+      "label": "Header_info",
+      "class": "string",
+      "optional": false,
+      "help": "description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1"
     }
   ],
   "outputSpec": [
