@@ -337,7 +337,7 @@ class TestGenerateBed:
 	            "HGNC:44506",
 	            "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia",
         flank=None,
         additional_regions=None)
 
@@ -359,7 +359,7 @@ class TestGenerateBed:
 
 
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file.bed"
-        test_bed_file=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_b38.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
@@ -384,7 +384,7 @@ class TestGenerateBed:
 	            "HGNC:44506",
 	            "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_flank",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_flank",
         flank=400,
         additional_regions=None)
 
@@ -406,7 +406,7 @@ class TestGenerateBed:
 
 
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_flank.bed"
-        test_bed_file=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_flank_400bp_b38.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_flank_400bp_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
@@ -437,7 +437,7 @@ class TestGenerateBed:
 	            "HGNC:44506",
 	            "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_additional_regions",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions",
         flank=None,
         additional_regions=additional_regions)
 
@@ -461,7 +461,7 @@ class TestGenerateBed:
 
 
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_additional_regions.bed"
-        test_bed_file=f"{TEST_DATA_DIR}/test_beds/R50.1_Early_onset_dementia_with_additional_regions_b38.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
