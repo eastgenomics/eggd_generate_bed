@@ -382,13 +382,13 @@ class TestGenerateBed:
         
         assert res , ("Files are not the same")
 
-    def test_bed_with_addtional_regions(self):
+    def test_bed_with_additional_regions(self):
         """
         Method to test the generate bed function can generate the same output as the expected bed file with additional regions
         
         """
         # make additional regions dataframe
-        add_regions_file=f"{TEST_DATA_DIR}/test_addtional_regions_generate_bed_v1.3.1.tsv"
+        add_regions_file=f"{TEST_DATA_DIR}/test_additional_regions_generate_bed_v1.3.1.tsv"
         additional_regions=gb.read_to_df(
         file_name=add_regions_file,
         sep="\t",
