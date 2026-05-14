@@ -311,9 +311,9 @@ class TestGenerateBed:
         """
         Testing utility to mock output of reading in test additonal regions file 
         Returns:
-            pd.Dataframe: df of test addtional regions file
+            pd.Dataframe: df of test additional regions file
         """
-      
+
         test_exons=gb.read_to_df(
             test_exons_file, "\t", ["chromosome", "start", "end", "gene",
                                 "transcript", "exon"])
@@ -322,10 +322,10 @@ class TestGenerateBed:
 
     def test_bed(self):
         """
-        Method to test the genrate bed function can generate the same output as the expected be file 
+        Method to test the generate bed function can generate the same output as the expected bed file 
         
         """
-        # run genrate bed functon and save ouput to generate_bed_output_file
+        # run generate bed function and save output to generate_bed_output_file
         gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
         transcripts=["NM_080050.4",	
                     "NM_010000.2",	
@@ -348,15 +348,15 @@ class TestGenerateBed:
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
         
-        assert filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False) , ("Files are not the same")
+        assert res , ("Files are not the same")
 
     
     def test_bed_with_flank(self):
         """
-        Method to test the genrate bed function can generate the same output as the expected be file with flank
+        Method to test the generate bed function can generate the same output as the expected bed file with flank
         
         """
-        # run genrate bed functon and save ouput to generate_bed_output_file
+        # run generate bed function and save output to generate_bed_output_file
         gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
         transcripts=["NM_080050.4",	
                     "NM_010000.2",	
@@ -380,21 +380,21 @@ class TestGenerateBed:
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
         
-        assert filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False) , ("Files are not the same")
+        assert res , ("Files are not the same")
 
     def test_bed_with_addtional_regions(self):
         """
-        Method to test the genrate bed function can generate the same output as the expected be file with addtional regions
+        Method to test the generate bed function can generate the same output as the expected bed file with additional regions
         
         """
-        # make addtional regions dataframe
+        # make additional regions dataframe
         add_regions_file=f"{TEST_DATA_DIR}/test_addtional_regions_generate_bed_v1.3.1.tsv"
         additional_regions=gb.read_to_df(
         file_name=add_regions_file,
         sep="\t",
         required_headers=["chromosome", "start", "end", "gene_panel","transcript"] )
 
-        # run generate bed functon and save output to generate_bed_output_file
+        # run generate bed function and save output to generate_bed_output_file
         gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
         transcripts=["NM_080050.4",	
                     "NM_010000.2",	
@@ -418,4 +418,4 @@ class TestGenerateBed:
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
         
-        assert filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False) , ("Files are not the same")
+        assert res , ("Files are not the same")
