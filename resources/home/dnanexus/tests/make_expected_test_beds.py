@@ -1,8 +1,9 @@
 import pandas as pd
+import os
 
 # make expected bed file without flank or addtional regions
 # make expected bed file and save as test_expected_bed_file.bed
-def expected_bed_file(test_data_dir):        
+def make_expected_bed_file(test_data_dir):        
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(
         [
@@ -16,7 +17,7 @@ def expected_bed_file(test_data_dir):
     expected_bed_file.to_csv(f"{test_data_dir}/expected_beds/test_expected_bed_file.bed", sep="\t", header=False, index=False)
 
 #make expected_bed_file with flank
-def expected_bed_file_with_flank(test_data_dir):
+def make_expected_bed_file_with_flank(test_data_dir):
     # make expected bed file and save as test_expected_bed_file.bed      
         columns=["chromosome","start","end","transcript"]
         expected_bed_file= pd.DataFrame(
@@ -54,6 +55,6 @@ TEST_DATA_DIR=(
     os.path.join(os.path.dirname(__file__), 'test_data')
 )
 
-expected_bed_file(test_data_dir=TEST_DATA_DIR)
-expected_bed_file_with_flank(test_data_dir=TEST_DATA_DIR)
-make_expected_bed_file_with_addtional_regions(test_data_dir=TEST_DATA_DIR)
+make_expected_bed_file(test_data_dir=TEST_DATA_DIR)
+make_expected_bed_file_with_flank(test_data_dir=TEST_DATA_DIR)
+make_expected_bed_file_with_additional_regions(test_data_dir=TEST_DATA_DIR)
