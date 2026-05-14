@@ -341,23 +341,7 @@ class TestGenerateBed:
         flank=None,
         additional_regions=None)
 
-       
-        # make expected bed file and save as test_expected_bed_file.bed
-        
-        columns=["chromosome","start","end","transcript"]
-        expected_bed_file= pd.DataFrame(
-        [
-        ["1",110001,110005,"NM_080050.4"],
-        ["1",100001,100020,"NM_010000.2"],
-        ["1",100001,100190,"NM_010000.3"],
-        ["1",289070,289078,"NM_181758.1"]
-        ] ,columns=columns
-        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
-
-     
-        expected_bed_file.to_csv(f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file.bed", sep="\t", header=False, index=False)
-
-
+        #get expected and test bed files path
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file.bed"
         test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_b38.bed"
 
@@ -388,22 +372,7 @@ class TestGenerateBed:
         flank=400,
         additional_regions=None)
 
-       
-        # make expected bed file and save as test_expected_bed_file.bed
-        
-        columns=["chromosome","start","end","transcript"]
-        expected_bed_file= pd.DataFrame(
-        [
-        ["1",109601,110405,"NM_080050.4"],
-        ["1",99601,100420,"NM_010000.2"],
-        ["1",99601,100590,"NM_010000.3"],
-        ["1",288670,289478,"NM_181758.1"]
-        ] ,columns=columns
-        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
-
-
-        expected_bed_file.to_csv(f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_flank.bed", sep="\t", header=False, index=False)
-
+        #get test and expected bed file paths
 
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_flank.bed"
         test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_flank_400bp_b38.bed"
@@ -440,25 +409,8 @@ class TestGenerateBed:
         output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions",
         flank=None,
         additional_regions=additional_regions)
-
-       
-        # make expected bed file and save as test_expected_bed_file.bed
         
-        columns=["chromosome","start","end","transcript"]
-        expected_bed_file= pd.DataFrame(
-        [
-        ["1",110001,110005,"NM_080050.4"],
-        ["1",100001,100020,"NM_010000.2"],
-        ["1",100001,100190,"NM_010000.3"],
-        ["1",289070,289078,"NM_181758.1"],
-        ["1",110011,110090,"NM_080050.4"],
-        ["1",100010,100200,"NM_010000.2"]
-        ] ,columns=columns
-        ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
-
-       
-        expected_bed_file.to_csv(f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_additional_regions.bed", sep="\t", header=False, index=False)
-
+        # get expected and test file paths
 
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_additional_regions.bed"
         test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions_b38.bed"
