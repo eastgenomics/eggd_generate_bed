@@ -309,9 +309,9 @@ class TestGenerateBed:
     """
     def read_in_exons_file(self, test_exons_file):
         """
-        Testing utility to mock output of reading in test additonal regions file 
+        Testing utility to mock output of reading in test additional regions file 
         Returns:
-            pd.Dataframe: df of test additional regions file
+            pd.Dataframe: df of test addiitional regions file
         """
 
         test_exons=gb.read_to_df(
