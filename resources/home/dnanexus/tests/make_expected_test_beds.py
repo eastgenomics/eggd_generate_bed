@@ -51,6 +51,26 @@ def make_expected_bed_file_with_additional_regions(test_data_dir):
        
     expected_bed_file.to_csv(f"{test_data_dir}/expected_beds/test_expected_bed_file_with_additional_regions.bed", sep="\t", header=False, index=False)
 
+#make expected_bed_file with additional regions and flank
+def make_expected_bed_file_with_additional_regions_and_flank(test_data_dir):
+     # make expected bed file and save as test_expected_bed_file.bed
+        
+    columns=["chromosome","start","end","transcript"]
+    expected_bed_file= pd.DataFrame(
+        [
+        ["1",109601,110405,"NM_080050.4"],
+        ["1",99601,100420,"NM_010000.2"],
+        ["1",99601,100590,"NM_010000.3"],
+        ["1",288670,289478,"NM_181758.1"],
+        ["1",109611,110490,"NM_080050.4"],
+        ["1",99610,100600,"NM_010000.2"]
+        ] ,columns=columns
+    ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
+
+       
+    expected_bed_file.to_csv(f"{test_data_dir}/expected_beds/test_expected_bed_file_with_additional_regions_and_flank.bed", sep="\t", header=False, index=False)
+
+
 TEST_DATA_DIR=(
     os.path.join(os.path.dirname(__file__), 'test_data')
 )
@@ -58,3 +78,4 @@ TEST_DATA_DIR=(
 make_expected_bed_file(test_data_dir=TEST_DATA_DIR)
 make_expected_bed_file_with_flank(test_data_dir=TEST_DATA_DIR)
 make_expected_bed_file_with_additional_regions(test_data_dir=TEST_DATA_DIR)
+make_expected_bed_file_with_additional_regions_and_flank(test_data_dir=TEST_DATA_DIR)
