@@ -1,17 +1,19 @@
-#make new test case as updating original exon test file gives error and formating has changed when adding rows to test data files
-#for example
-#g2t
-#36  HGNC:10000  NM_080050.4 NOT_CLINICAL_TRANSCRIPT   not_canonical                      NaN            NaN
-#37      HGNC:12600  NM_010000.2 CLINICAL_TRANSCRIPT       canonical                      NaN            NaN
-#38  HGNC:44506  NM_010000.3 NOT_CLINICAL_TRANSCRIPT   not_canonical                      NaN            NaN
-#39      HGNC:93010  NM_181758.1 CLINICAL_TRANSCRIPT       canonical                      NaN            NaN
+'''
+This scripts makes new test cases, as the existing test cases gives error with new  test function for generate_bed() in test_generate_bed.py script.
+Manually adding new rows to  the existing test case files would also change  formating
+For example:
+g2t
+36  HGNC:10000  NM_080050.4 NOT_CLINICAL_TRANSCRIPT   not_canonical                      NaN            NaN
+37      HGNC:12600  NM_010000.2 CLINICAL_TRANSCRIPT       canonical                      NaN            NaN
+38  HGNC:44506  NM_010000.3 NOT_CLINICAL_TRANSCRIPT   not_canonical                      NaN            NaN
+39      HGNC:93010  NM_181758.1 CLINICAL_TRANSCRIPT       canonical                      NaN            NaN
 
-#gene_panels
-#20  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
-#21  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
-#22  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
-#23  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
-
+gene_panels
+20  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
+21  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
+22  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
+23  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
+'''
 import pandas as pd
 # create a test exon_df- dtypes for required columns are defined in the generated_bed.py script 
 column=["chromosome", "start", "end", "gene", "transcript", "exon"]

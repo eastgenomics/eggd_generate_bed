@@ -1,8 +1,14 @@
 import pandas as pd
 import os
 
-# make expected bed file without flank or addtional regions
-# make expected bed file and save as test_expected_bed_file.bed
+'''
+This scripts makes expected bed files (with prefix test_expected_bed_file) for 4 tests scenarios 
+1. without flank and additional regions
+2. with flank
+3. with additional regions
+4. with flank and additional regions
+
+'''
 def make_expected_bed_file(test_data_dir):        
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(

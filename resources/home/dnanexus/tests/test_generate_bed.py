@@ -452,7 +452,7 @@ class TestGenerateBed:
 
         expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_additional_regions_and_flank.bed"
         test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank_400bp_b38.bed"
-
+        
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
         
