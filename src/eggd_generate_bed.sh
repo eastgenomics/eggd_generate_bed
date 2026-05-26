@@ -70,8 +70,9 @@ main() {
         dx-jobutil-report-error "Error: empty bed file generated"
         exit 1
     else
-        sort -k1,1V -k2,2n "$bed_file" -o"temp_bed.bed"
+        sort -k1,1V -k2,2n "$bed_file" -o "temp_bed.bed"
         mv "temp_bed.bed" "$bed_file"
+        printf "${header_info}\n$(cat ${bed_file})" > ${bed_file}
     fi
 
     echo "Done, uploading BED file: $bed_file"
