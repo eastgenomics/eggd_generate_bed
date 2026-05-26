@@ -3,9 +3,9 @@
   "title": "eggd_generate_bed",
   "summary": "Generates a BED file for a given panel name",
   "dxapi": "1.0.0",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "properties": {
-    "githubRelease": "v1.3.0"
+    "githubRelease": "v1.3.1"
   },
   "inputSpec": [
     {
@@ -65,37 +65,11 @@
       "help": "Primarily used for generating panels for CNV annotation where additional regions are required"
     },
     {
-      "name": "manifest",
-      "label": "Bioinformatics manifest",
-      "class": "file",
-      "optional": true,
-      "suggestions": [
-        {
-          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
-          "path": "/dynamic_files/BioinformaticManifest/"
-        }
-      ],
-      "patterns": [
-        "*"
-      ],
-      "help": "Used to get appropriate panel to generate bed file. Must also provide a sample identifying file (file name used to select panel)."
-    },
-    {
-      "name": "sample_file",
-      "label": "File containing sample id as prefix of file name followed by a '_'. Must also provide the manifest file to get appropriate panel.",
-      "class": "file",
-      "optional": true,
-      "patterns": [
-        "*"
-      ],
-      "help": ""
-    },
-    {
       "name": "panel",
       "label": "Panel name",
       "class": "string",
       "optional": true,
-      "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May either specify panel here, or by providing the manifest and a sample identifying file."
+      "help": "Panel and / or gene name(s), semi colon separated for multiple panels. May specify panel here"
     },
     {
       "name": "output_file_prefix",
@@ -110,6 +84,13 @@
       "class": "int",
       "optional": true,
       "help": "flank to apply to start and end of regions in bed file"
+    },
+    {
+      "name": "header_info",
+      "label": "Header_info",
+      "class": "string",
+      "optional": false,
+      "help": "description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1"
     }
   ],
   "outputSpec": [
@@ -136,7 +117,6 @@
     }
   },
   "developers":[
-    "user-sophier",
     "org-emee_1"
   ],
   "authorizedUsers": [
