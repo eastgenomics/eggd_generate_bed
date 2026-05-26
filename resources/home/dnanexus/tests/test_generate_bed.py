@@ -2,8 +2,9 @@
 import os
 import sys
 import subprocess
+import filecmp
 import pytest
-
+import pandas as pd
 
 sys.path.append(os.path.abspath(
     os.path.join(os.path.realpath(__file__), '../../')))
@@ -301,3 +302,158 @@ class TestGetTranscripts:
                 g2t=setup_g2t, genes=test_genes,
                 exons=setup_exons
             )
+
+class TestGenerateBed:
+    """
+    Method to test generate bed 
+    """
+    def read_in_exons_file(self, test_exons_file):
+        """
+        Testing utility to mock output of reading in test additional regions file 
+        Returns:
+            pd.Dataframe: df of test addiitional regions file
+        """
+
+        test_exons=gb.read_to_df(
+            test_exons_file, "\t", ["chromosome", "start", "end", "gene",
+                                "transcript", "exon"])
+        
+        return test_exons
+
+    def test_bed(self):
+        """
+        Method to test the generate bed function can generate the same output as the expected bed file 
+        
+        """
+        # run generate bed function and save output to generate_bed_output_file
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                     "NM_010000.2",	
+                     "NM_010000.3",	
+                     "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+               "HGNC:12600",
+	           "HGNC:44506",
+	           "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia",
+        flank=None,
+        additional_regions=None)
+
+        #get expected and test bed files path
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_b38.bed"
+
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert res , ("Files are not the same")
+
+    
+    def test_bed_with_flank(self):
+        """
+        Method to test the generate bed function can generate the same output as the expected bed file with flank
+        
+        """
+        # run generate bed function and save output to generate_bed_output_file
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                     "NM_010000.2",	
+                     "NM_010000.3",	
+                     "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+               "HGNC:12600",
+	           "HGNC:44506",
+	           "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_flank",
+        flank=400,
+        additional_regions=None)
+
+        #get test and expected bed file paths
+
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_flank.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_flank_400bp_b38.bed"
+
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert res , ("Files are not the same")
+
+    def test_bed_with_additional_regions(self):
+        """
+        Method to test the generate bed function can generate the same output as the expected bed file with additional regions
+        
+        """
+        # make additional regions dataframe
+        add_regions_file=f"{TEST_DATA_DIR}/test_additional_regions_generate_bed_v1.3.1.tsv"
+        additional_regions=gb.read_to_df(
+        file_name=add_regions_file,
+        sep="\t",
+        required_headers=["chromosome", "start", "end", "gene_panel","transcript"] )
+
+        # run generate bed function and save output to generate_bed_output_file
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                     "NM_010000.2",	
+                     "NM_010000.3",	
+                     "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+               "HGNC:12600",
+	           "HGNC:44506",
+	           "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions",
+        flank=None,
+        additional_regions=additional_regions)
+        
+        # get expected and test file paths
+
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_additional_regions.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions_b38.bed"
+
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert res , ("Files are not the same")
+    
+    def test_bed_with_additional_regions_and_flank(self):
+        """
+        Method to test the generate bed function can generate the same output as the expected bed file with additional regions and flank
+        
+        """
+        # make additional regions dataframe
+        add_regions_file=f"{TEST_DATA_DIR}/test_additional_regions_generate_bed_v1.3.1.tsv"
+        additional_regions=gb.read_to_df(
+        file_name=add_regions_file,
+        sep="\t",
+        required_headers=["chromosome", "start", "end", "gene_panel","transcript"] )
+
+        # run generate bed function and save output to generate_bed_output_file
+        gb.generate_bed(exons=self.read_in_exons_file(f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"),
+        transcripts=["NM_080050.4",	
+                     "NM_010000.2",	
+                     "NM_010000.3",	
+                     "NM_181758.1"],
+        panels=["R50.1_Early onset dementia"],
+        genes=["HGNC:10000",
+               "HGNC:12600",
+	           "HGNC:44506",
+	           "HGNC:93010"],
+        genome_build="_b38.bed",
+        output_prefix=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank",
+        flank=400,
+        additional_regions=additional_regions)
+        
+        # get expected and test file paths
+        
+        expected_bed_file=f"{TEST_DATA_DIR}/expected_beds/test_expected_bed_file_with_additional_regions_and_flank.bed"
+        test_bed_file=f"{TEST_DATA_DIR}/test_beds/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank_400bp_b38.bed"
+        
+        # compare expected bed file with bed file generate by gb.generate_bed()
+        res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
+        
+        assert res , ("Files are not the same")
