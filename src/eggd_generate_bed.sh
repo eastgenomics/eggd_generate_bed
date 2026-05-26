@@ -72,8 +72,8 @@ main() {
     else
         sort -k1,1V -k2,2n "$bed_file" -o "temp_bed.bed"
         mv "temp_bed.bed" "$bed_file"
-        bed_file=$(cat "${bed_file}")
-        printf "%s\n%s" "${header_info}" "${bed_file}" > "${bed_file}"
+        bed_file_content=$(cat "${bed_file}")
+        printf "%s\n%s" "${header_info}" "${bed_file_content}" > "${bed_file}"
     fi
 
     echo "Done, uploading BED file: $bed_file"
