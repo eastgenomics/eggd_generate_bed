@@ -39,8 +39,9 @@ def make_new_exons():
             "transcript": str,
             "exon" : int})
     # save dataframe to resources/home/dnanexus/tests/test_data
-    exon_df.to_csv('resources/home/dnanexus/tests/test_data/test_exons_generate_bed_v1.3.1.tsv', sep="\t",header=False,index=False)
-    return f"{TEST_DATA_DIR}/test_exons_generate_bed_v1.3.1.tsv"
+    out=Path(TEST_DATA_DIR) / "test_exons_generate_bed_v1.3.1.tsv"
+    exon_df.to_csv(out, sep="\t",header=False,index=False)
+    return str(out)
 
 
 # create a test g2t_df- dtypes for required columns are defined in the generated_bed.py script 
@@ -59,8 +60,9 @@ def make_new_g2t():
             "canonical":str})
 
     # save dataframe to resources/home/dnanexus/tests/test_data
-    df_g2t.to_csv('resources/home/dnanexus/tests/test_data/test_g2t_generate_bed_v1.3.1.tsv', sep="\t",header=False,index=False)
-    return f"{TEST_DATA_DIR}/test_g2t_generate_bed_v1.3.1.tsv"
+    out= Path(TEST_DATA_DIR) / "test_g2t_generate_bed_v1.3.1.tsv"
+    df_g2t.to_csv(out, sep="\t",header=False,index=False)
+    return out
 
 
 # create a test gene panels file- dtypes for required columns are defined in the generated_bed.py script 
@@ -76,12 +78,13 @@ def make_new_gene_panels():
             {"clinical_ind":str, 
             "panel":str, 
             "gene":str})
-    df_gene_panels.to_csv('resources/home/dnanexus/tests/test_data/test_gene_panels_generate_bed_v1.3.1.tsv', sep="\t",header=False,index=False)
-    return f"{TEST_DATA_DIR}/test_gene_panels_generate_bed_v1.3.1.tsv"
+    out=Path(TEST_DATA_DIR) / "test_gene_panels_generate_bed_v1.3.1.tsv"
+    df_gene_panels.to_csv(out, sep="\t",header=False,index=False)
+    return out
 
 # create a test additonal regions file- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_additional_regions")
-def make_new_addtional_regions():
+def make_new_additional_regions():
     column=["chromosome", "start", "end", "gene_panel","transcript","exons"]
     df_additional_regions=pd.DataFrame([
         ["1",110011,110090,"HGNC:10000","NM_080050.4","1"],
@@ -95,8 +98,9 @@ def make_new_addtional_regions():
                 "gene_panel": str,
                 "transcript": str,
                 "exons": str})
-    df_additional_regions.to_csv('resources/home/dnanexus/tests/test_data/test_additional_regions_generate_bed_v1.3.1.tsv', sep="\t",index=False)
-    return f"{TEST_DATA_DIR}/test_additional_regions_generate_bed_v1.3.1.tsv"
+    out=Path(TEST_DATA_DIR) / "test_additional_regions_generate_bed_v1.3.1.tsv"
+    df_additional_regions.to_csv(out, sep="\t",index=False)
+    return out
 
 '''
 Make the path locations for expected bed files
