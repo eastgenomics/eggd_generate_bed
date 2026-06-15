@@ -130,7 +130,7 @@ def make_expected_bed_file(make_expected_bed_path):
         ] ,columns=columns
         ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
 
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_beds/expected_bed_file.bed", sep="\t", header=False, index=False)
+    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file.bed", sep="\t", header=False, index=False)
     return f"{make_expected_bed_path}/expected_bed_file.bed"
 
 
@@ -148,7 +148,7 @@ def make_expected_bed_file_with_flank(make_expected_bed_path):
         ] ,columns=columns
         ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
 
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_beds/expected_bed_file_with_flank.bed", sep="\t", header=False, index=False)
+    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file_with_flank.bed", sep="\t", header=False, index=False)
     return f"{make_expected_bed_path}/expected_bed_file_with_flank.bed"
 
 #make expected_bed_file with additional regions
@@ -167,7 +167,7 @@ def make_expected_bed_file_with_additional_regions(make_expected_bed_path):
         ] ,columns=columns
     ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
     
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_beds/expected_bed_file_with_additional_regions.bed", sep="\t", header=False, index=False)
+    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file_with_additional_regions.bed", sep="\t", header=False, index=False)
     return f"{make_expected_bed_path}/expected_bed_file_with_additional_regions.bed"
 
 
@@ -187,5 +187,5 @@ def make_expected_bed_file_with_additional_regions_and_flank(make_expected_bed_p
         ] ,columns=columns
     ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
     
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_beds/expected_bed_file_with_additional_regions_and_flank.bed", sep="\t", header=False, index=False)
+    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file_with_additional_regions_and_flank.bed", sep="\t", header=False, index=False)
     return f"{make_expected_bed_path}/expected_bed_file_with_additional_regions_and_flank.bed"
