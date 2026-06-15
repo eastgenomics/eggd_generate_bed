@@ -389,7 +389,7 @@ class TestGenerateBed:
         assert res , ("Files are not the same")
 
     def test_bed_with_additional_regions(self,setup_new_exons,
-                                         setup_new_addtional_regions,
+                                         setup_new_additional_regions,
                                          setup_expected_bed_with_additional_regions,
                                          make_test_beds_path):
         """
@@ -398,7 +398,7 @@ class TestGenerateBed:
         """
         # make additional regions dataframe
         additional_regions=gb.read_to_df(
-        file_name=setup_new_addtional_regions,
+        file_name=setup_new_additional_regions,
         sep="\t",
         required_headers=["chromosome", "start", "end", "gene_panel","transcript"] )
 
@@ -429,8 +429,8 @@ class TestGenerateBed:
         assert res , ("Files are not the same")
     
     def test_bed_with_additional_regions_and_flank(self,setup_new_exons,
-                                                   setup_expected_bed_with_addtional_regions_flank,
-                                                   setup_new_addtional_regions,
+                                                   setup_expected_bed_with_additional_regions_flank,
+                                                   setup_new_additional_regions,
                                                    make_test_beds_path):
         """
         Method to test the generate bed function can generate the same output as the expected bed file with additional regions and flank
@@ -438,7 +438,7 @@ class TestGenerateBed:
         """
         # make additional regions dataframe
         additional_regions=gb.read_to_df(
-        file_name=setup_new_addtional_regions,
+        file_name=setup_new_additional_regions,
         sep="\t",
         required_headers=["chromosome", "start", "end", "gene_panel","transcript"] )
 
@@ -460,7 +460,7 @@ class TestGenerateBed:
         
         # get expected and test file paths
         
-        expected_bed_file=setup_expected_bed_with_addtional_regions_flank
+        expected_bed_file=setup_expected_bed_with_additional_regions_flank
         test_bed_file=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank_400bp_b38.bed"
         
         # compare expected bed file with bed file generate by gb.generate_bed()
