@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 
 '''
-New test cases requeired, as the existing test cases gives error with new  test function for generate_bed() in test_generate_bed.py script.
+New test cases required, as the existing test cases gives error with new  test function for generate_bed() in test_generate_bed.py script.
 Manually adding new rows to  the existing test case files would also change  formating
 For example:
 g2t
@@ -23,7 +23,7 @@ gene_panels
 
 # create a test exon_df- dtypes for required columns are defined in the generated_bed.py script
 @pytest.fixture(name="setup_new_exons")
-def make_new_exons(tmp_path: Path) -> str:
+def new_exons(tmp_path: Path) -> str:
     column=["chromosome", "start", "end", "gene", "transcript", "exon"]
     exon_df=pd.DataFrame([
         ["1",110001,110005,"HGNC:10000","NM_080050.4",1],
@@ -44,7 +44,7 @@ def make_new_exons(tmp_path: Path) -> str:
 
 # create a test g2t_df- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_g2t")
-def make_new_g2t(tmp_path: Path) -> str:
+def new_g2t(tmp_path: Path) -> str:
     column=["gene", "transcript", "clinical_tx", "canonical"]
     df_g2t=pd.DataFrame([
         ["HGNC:10000","NM_080050.4","clinical_transcript","canonical"],
@@ -65,7 +65,7 @@ def make_new_g2t(tmp_path: Path) -> str:
 
 # create a test gene panels file- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_gene_panels")
-def make_new_gene_panels(tmp_path: Path) -> str:
+def new_gene_panels(tmp_path: Path) -> str:
     column=["clinical_ind", "panel", "gene"]
     df_gene_panels=pd.DataFrame([
         ["R50.1_Early onset dementia","Early onset dementia","HGNC:10000"],
@@ -82,7 +82,7 @@ def make_new_gene_panels(tmp_path: Path) -> str:
 
 # create a test additonal regions file- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_additional_regions")
-def make_new_additional_regions(tmp_path: Path) -> str:
+def new_additional_regions(tmp_path: Path) -> str:
     column=["chromosome", "start", "end", "gene_panel","transcript","exons"]
     df_additional_regions=pd.DataFrame([
         ["1",110011,110090,"HGNC:10000","NM_080050.4","1"],
@@ -104,13 +104,13 @@ def make_new_additional_regions(tmp_path: Path) -> str:
 Make the path locations for expected bed files
 '''
 @pytest.fixture
-def make_expected_bed_path(tmp_path:Path)-> Path:
+def expected_bed_path(tmp_path:Path)-> Path:
     # specify nested directory structure 
-    expected_bed_path=tmp_path / "expected_beds"
-    print(expected_bed_path)
+    bed_path=tmp_path / "expected_beds"
+    print(bed_path)
     #created nested directories
-    expected_bed_path.mkdir(parents=True,exist_ok=True)
-    return expected_bed_path
+    bed_path.mkdir(parents=True,exist_ok=True)
+    return bed_path
 
 '''
 This scripts makes expected bed files (with prefix test_expected_bed_file) for 4 tests scenarios 
@@ -121,7 +121,7 @@ This scripts makes expected bed files (with prefix test_expected_bed_file) for 4
 
 '''
 @pytest.fixture(name="setup_expected_bed")
-def make_expected_bed_file(make_expected_bed_path):        
+def expected_bed_file(expected_bed_path):        
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(
         [
@@ -132,13 +132,13 @@ def make_expected_bed_file(make_expected_bed_path):
         ] ,columns=columns
         ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
 
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file.bed", sep="\t", header=False, index=False)
-    return f"{make_expected_bed_path}/expected_bed_file.bed"
+    expected_bed_file.to_csv(f"{expected_bed_path}/expected_bed_file.bed", sep="\t", header=False, index=False)
+    return f"{expected_bed_path}/expected_bed_file.bed"
 
 
 #make expected_bed_file with flank
 @pytest.fixture(name="setup_expected_bed_with_flank")
-def make_expected_bed_file_with_flank(make_expected_bed_path):
+def expected_bed_file_with_flank(expected_bed_path):
     # make expected bed file and save as test_expected_bed_file.bed      
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(
@@ -150,12 +150,12 @@ def make_expected_bed_file_with_flank(make_expected_bed_path):
         ] ,columns=columns
         ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
 
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file_with_flank.bed", sep="\t", header=False, index=False)
-    return f"{make_expected_bed_path}/expected_bed_file_with_flank.bed"
+    expected_bed_file.to_csv(f"{expected_bed_path}/expected_bed_file_with_flank.bed", sep="\t", header=False, index=False)
+    return f"{expected_bed_path}/expected_bed_file_with_flank.bed"
 
 #make expected_bed_file with additional regions
 @pytest.fixture(name="setup_expected_bed_with_additional_regions")
-def make_expected_bed_file_with_additional_regions(make_expected_bed_path):
+def expected_bed_file_with_additional_regions(expected_bed_path):
     # make expected bed file and save as test_expected_bed_file.bed    
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(
@@ -169,13 +169,13 @@ def make_expected_bed_file_with_additional_regions(make_expected_bed_path):
         ] ,columns=columns
     ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
     
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file_with_additional_regions.bed", sep="\t", header=False, index=False)
-    return f"{make_expected_bed_path}/expected_bed_file_with_additional_regions.bed"
+    expected_bed_file.to_csv(f"{expected_bed_path}/expected_bed_file_with_additional_regions.bed", sep="\t", header=False, index=False)
+    return f"{expected_bed_path}/expected_bed_file_with_additional_regions.bed"
 
 
 #make expected_bed_file with additional regions and flank
 @pytest.fixture(name="setup_expected_bed_with_additional_regions_flank")
-def make_expected_bed_file_with_additional_regions_and_flank(make_expected_bed_path):
+def expected_bed_file_with_additional_regions_and_flank(expected_bed_path):
     # make expected bed file and save as test_expected_bed_file.bed    
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(
@@ -189,5 +189,5 @@ def make_expected_bed_file_with_additional_regions_and_flank(make_expected_bed_p
         ] ,columns=columns
     ).astype({"chromosome": str, "start": int ,"end": int, "transcript": str})
     
-    expected_bed_file.to_csv(f"{make_expected_bed_path}/expected_bed_file_with_additional_regions_and_flank.bed", sep="\t", header=False, index=False)
-    return f"{make_expected_bed_path}/expected_bed_file_with_additional_regions_and_flank.bed"
+    expected_bed_file.to_csv(f"{expected_bed_path}/expected_bed_file_with_additional_regions_and_flank.bed", sep="\t", header=False, index=False)
+    return f"{expected_bed_path}/expected_bed_file_with_additional_regions_and_flank.bed"
