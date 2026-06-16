@@ -63,10 +63,10 @@ def read_in_exons():
     return test_exons
 
 @pytest.fixture
-def make_test_beds_path(tmp_path:Path) -> Path:
-    test_beds_path=tmp_path / "test_beds"
-    test_beds_path.mkdir(parents=True,exist_ok=True)
-    return test_beds_path
+def test_beds_path(tmp_path:Path) -> Path:
+    t_beds_path=tmp_path / "test_beds"
+    t_beds_path.mkdir(parents=True,exist_ok=True)
+    return t_beds_path
 
 class TestReadToDf:
     """Methods to test read_to_df() function from generate_bed.py"""
@@ -326,7 +326,7 @@ class TestGenerateBed:
         
         return test_exons
 
-    def test_bed(self,setup_new_exons,setup_expected_bed,make_test_beds_path):
+    def test_bed(self,setup_new_exons,setup_expected_bed,test_beds_path):
         """
         Method to test the generate bed function can generate the same output as the expected bed file 
         
@@ -343,13 +343,13 @@ class TestGenerateBed:
 	           "HGNC:44506",
 	           "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia",
+        output_prefix=f"{test_beds_path}/test_R50.1_Early_onset_dementia",
         flank=None,
         additional_regions=None)
 
         #get expected and test bed files path
         expected_bed_file=setup_expected_bed
-        test_bed_file=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_b38.bed"
+        test_bed_file=f"{test_beds_path}/test_R50.1_Early_onset_dementia_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
@@ -357,7 +357,7 @@ class TestGenerateBed:
         assert res , ("Files are not the same")
 
     
-    def test_bed_with_flank(self,setup_new_exons,setup_expected_bed_with_flank,make_test_beds_path):
+    def test_bed_with_flank(self,setup_new_exons,setup_expected_bed_with_flank,test_beds_path):
         """
         Method to test the generate bed function can generate the same output as the expected bed file with flank
         
@@ -374,14 +374,14 @@ class TestGenerateBed:
 	           "HGNC:44506",
 	           "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_flank",
+        output_prefix=f"{test_beds_path}/test_R50.1_Early_onset_dementia_with_flank",
         flank=400,
         additional_regions=None)
 
         #get test and expected bed file paths
 
         expected_bed_file=setup_expected_bed_with_flank
-        test_bed_file=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_flank_400bp_b38.bed"
+        test_bed_file=f"{test_beds_path}/test_R50.1_Early_onset_dementia_with_flank_400bp_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
@@ -391,7 +391,7 @@ class TestGenerateBed:
     def test_bed_with_additional_regions(self,setup_new_exons,
                                          setup_new_additional_regions,
                                          setup_expected_bed_with_additional_regions,
-                                         make_test_beds_path):
+                                         test_beds_path):
         """
         Method to test the generate bed function can generate the same output as the expected bed file with additional regions
         
@@ -414,14 +414,14 @@ class TestGenerateBed:
 	           "HGNC:44506",
 	           "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions",
+        output_prefix=f"{test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions",
         flank=None,
         additional_regions=additional_regions)
         
         # get expected and test file paths
 
         expected_bed_file=setup_expected_bed_with_additional_regions
-        test_bed_file=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_b38.bed"
+        test_bed_file=f"{test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_b38.bed"
 
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
@@ -431,7 +431,7 @@ class TestGenerateBed:
     def test_bed_with_additional_regions_and_flank(self,setup_new_exons,
                                                    setup_expected_bed_with_additional_regions_flank,
                                                    setup_new_additional_regions,
-                                                   make_test_beds_path):
+                                                   test_beds_path):
         """
         Method to test the generate bed function can generate the same output as the expected bed file with additional regions and flank
         
@@ -454,14 +454,14 @@ class TestGenerateBed:
 	           "HGNC:44506",
 	           "HGNC:93010"],
         genome_build="_b38.bed",
-        output_prefix=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank",
+        output_prefix=f"{test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank",
         flank=400,
         additional_regions=additional_regions)
         
         # get expected and test file paths
         
         expected_bed_file=setup_expected_bed_with_additional_regions_flank
-        test_bed_file=f"{make_test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank_400bp_b38.bed"
+        test_bed_file=f"{test_beds_path}/test_R50.1_Early_onset_dementia_with_additional_regions_and_flank_400bp_b38.bed"
         
         # compare expected bed file with bed file generate by gb.generate_bed()
         res = filecmp.cmp(test_bed_file ,expected_bed_file, shallow=False)       
