@@ -22,7 +22,7 @@ gene_panels
 
 
 # create a test exon_df- dtypes for required columns are defined in the generated_bed.py script
-@pytest.fixture(name="setup_new_exons")
+@pytest.fixture(name="test_new_exons")
 def new_exons(tmp_path: Path) -> str:
     column=["chromosome", "start", "end", "gene", "transcript", "exon"]
     exon_df=pd.DataFrame([
@@ -43,7 +43,7 @@ def new_exons(tmp_path: Path) -> str:
 
 
 # create a test g2t_df- dtypes for required columns are defined in the generated_bed.py script 
-@pytest.fixture(name="setup_new_g2t")
+@pytest.fixture(name="test_new_g2t")
 def new_g2t(tmp_path: Path) -> str:
     column=["gene", "transcript", "clinical_tx", "canonical"]
     df_g2t=pd.DataFrame([
@@ -64,7 +64,7 @@ def new_g2t(tmp_path: Path) -> str:
 
 
 # create a test gene panels file- dtypes for required columns are defined in the generated_bed.py script 
-@pytest.fixture(name="setup_new_gene_panels")
+@pytest.fixture(name="test_new_gene_panels")
 def new_gene_panels(tmp_path: Path) -> str:
     column=["clinical_ind", "panel", "gene"]
     df_gene_panels=pd.DataFrame([
@@ -81,7 +81,7 @@ def new_gene_panels(tmp_path: Path) -> str:
     return out
 
 # create a test additonal regions file- dtypes for required columns are defined in the generated_bed.py script 
-@pytest.fixture(name="setup_new_additional_regions")
+@pytest.fixture(name="test_new_additional_regions")
 def new_additional_regions(tmp_path: Path) -> str:
     column=["chromosome", "start", "end", "gene_panel","transcript","exons"]
     df_additional_regions=pd.DataFrame([
@@ -120,7 +120,7 @@ This scripts makes expected bed files (with prefix test_expected_bed_file) for 4
 4. with flank and additional regions
 
 '''
-@pytest.fixture(name="setup_expected_bed")
+@pytest.fixture(name="test_expected_bed")
 def expected_bed_file(expected_bed_path):        
     columns=["chromosome","start","end","transcript"]
     expected_bed_file= pd.DataFrame(
@@ -137,7 +137,7 @@ def expected_bed_file(expected_bed_path):
 
 
 #make expected_bed_file with flank
-@pytest.fixture(name="setup_expected_bed_with_flank")
+@pytest.fixture(name="test_expected_bed_with_flank")
 def expected_bed_file_with_flank(expected_bed_path):
     # make expected bed file and save as test_expected_bed_file.bed      
     columns=["chromosome","start","end","transcript"]
@@ -154,7 +154,7 @@ def expected_bed_file_with_flank(expected_bed_path):
     return f"{expected_bed_path}/expected_bed_file_with_flank.bed"
 
 #make expected_bed_file with additional regions
-@pytest.fixture(name="setup_expected_bed_with_additional_regions")
+@pytest.fixture(name="test_expected_bed_with_additional_regions")
 def expected_bed_file_with_additional_regions(expected_bed_path):
     # make expected bed file and save as test_expected_bed_file.bed    
     columns=["chromosome","start","end","transcript"]
@@ -174,7 +174,7 @@ def expected_bed_file_with_additional_regions(expected_bed_path):
 
 
 #make expected_bed_file with additional regions and flank
-@pytest.fixture(name="setup_expected_bed_with_additional_regions_flank")
+@pytest.fixture(name="test_expected_bed_with_additional_regions_flank")
 def expected_bed_file_with_additional_regions_and_flank(expected_bed_path):
     # make expected bed file and save as test_expected_bed_file.bed    
     columns=["chromosome","start","end","transcript"]
