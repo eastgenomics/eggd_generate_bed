@@ -19,13 +19,11 @@ gene_panels
 22  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
 23  r50.1_early onset dementia  early onset dement...                                                NaN         NaN
 '''
-TEST_DATA_DIR = (
-    os.path.join(os.path.dirname(__file__), 'test_data')
-)
+
 
 # create a test exon_df- dtypes for required columns are defined in the generated_bed.py script
 @pytest.fixture(name="setup_new_exons")
-def make_new_exons():
+def make_new_exons(tmp_path: Path) -> str:
     column=["chromosome", "start", "end", "gene", "transcript", "exon"]
     exon_df=pd.DataFrame([
         ["1",110001,110005,"HGNC:10000","NM_080050.4",1],
@@ -38,15 +36,15 @@ def make_new_exons():
             "gene": str, 
             "transcript": str,
             "exon" : int})
-    # save dataframe to resources/home/dnanexus/tests/test_data
-    out=Path(TEST_DATA_DIR) / "test_exons_generate_bed_v1.3.1.tsv"
+    # save dataframe to  <class 'pathlib.PosixPath'> which is passed to to_csv (that accepts path-like object)
+    out=tmp_path / "test_exons_generate_bed_v1.3.1.tsv"
     exon_df.to_csv(out, sep="\t",header=False,index=False)
     return str(out)
 
 
 # create a test g2t_df- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_g2t")
-def make_new_g2t():
+def make_new_g2t(tmp_path: Path) -> str:
     column=["gene", "transcript", "clinical_tx", "canonical"]
     df_g2t=pd.DataFrame([
         ["HGNC:10000","NM_080050.4","clinical_transcript","canonical"],
@@ -59,15 +57,15 @@ def make_new_g2t():
             "clinical_tx":str, 
             "canonical":str})
 
-    # save dataframe to resources/home/dnanexus/tests/test_data
-    out= Path(TEST_DATA_DIR) / "test_g2t_generate_bed_v1.3.1.tsv"
+    # save dataframe  
+    out= tmp_path / "test_g2t_generate_bed_v1.3.1.tsv"
     df_g2t.to_csv(out, sep="\t",header=False,index=False)
     return out
 
 
 # create a test gene panels file- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_gene_panels")
-def make_new_gene_panels():
+def make_new_gene_panels(tmp_path: Path) -> str:
     column=["clinical_ind", "panel", "gene"]
     df_gene_panels=pd.DataFrame([
         ["R50.1_Early onset dementia","Early onset dementia","HGNC:10000"],
@@ -78,13 +76,13 @@ def make_new_gene_panels():
             {"clinical_ind":str, 
             "panel":str, 
             "gene":str})
-    out=Path(TEST_DATA_DIR) / "test_gene_panels_generate_bed_v1.3.1.tsv"
+    out=tmp_path / "test_gene_panels_generate_bed_v1.3.1.tsv"
     df_gene_panels.to_csv(out, sep="\t",header=False,index=False)
     return out
 
 # create a test additonal regions file- dtypes for required columns are defined in the generated_bed.py script 
 @pytest.fixture(name="setup_new_additional_regions")
-def make_new_additional_regions():
+def make_new_additional_regions(tmp_path: Path) -> str:
     column=["chromosome", "start", "end", "gene_panel","transcript","exons"]
     df_additional_regions=pd.DataFrame([
         ["1",110011,110090,"HGNC:10000","NM_080050.4","1"],
@@ -98,7 +96,7 @@ def make_new_additional_regions():
                 "gene_panel": str,
                 "transcript": str,
                 "exons": str})
-    out=Path(TEST_DATA_DIR) / "test_additional_regions_generate_bed_v1.3.1.tsv"
+    out=tmp_path / "test_additional_regions_generate_bed_v1.3.1.tsv"
     df_additional_regions.to_csv(out, sep="\t",index=False)
     return out
 
@@ -108,7 +106,7 @@ Make the path locations for expected bed files
 @pytest.fixture
 def make_expected_bed_path(tmp_path:Path)-> Path:
     # specify nested directory structure 
-    expected_bed_path=Path(f"{TEST_DATA_DIR}/expected_beds/")
+    expected_bed_path=tmp_path / "expected_beds"
     print(expected_bed_path)
     #created nested directories
     expected_bed_path.mkdir(parents=True,exist_ok=True)

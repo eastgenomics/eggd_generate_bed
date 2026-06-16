@@ -64,7 +64,7 @@ def read_in_exons():
 
 @pytest.fixture
 def make_test_beds_path(tmp_path:Path) -> Path:
-    test_beds_path=Path(f"{TEST_DATA_DIR}/test_beds/")
+    test_beds_path=tmp_path / "test_beds"
     test_beds_path.mkdir(parents=True,exist_ok=True)
     return test_beds_path
 
