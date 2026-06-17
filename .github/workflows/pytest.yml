@@ -39,4 +39,7 @@ jobs:
         run: |
           python -m pytest ./resources/home/dnanexus/tests \
             --cov=./resources/home/dnanexus/tests \
-            --cov-report=term
+            --cov-report=term \
+            -v
+      - name: Run pip audit
+      - uses: pypa/gh-action-pip-audit@v1.1.0
