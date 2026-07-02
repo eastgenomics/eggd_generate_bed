@@ -89,7 +89,7 @@
       "name": "header_info",
       "label": "Header_info",
       "class": "string",
-      "optional": false,
+      "optional": true,
       "help": "description of GRCh build and static bed version e.g. #assembly=GRCh38,version=v1.0.1"
     }
   ],
