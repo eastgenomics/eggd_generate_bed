@@ -69,15 +69,21 @@ main() {
         echo "empty bed file generated, exiting now."
         dx-jobutil-report-error "Error: empty bed file generated"
         exit 1
-    else
+    fi
+
+    if [ -s "$bed_file" ]; then
         sort -k1,1V -k2,2n "$bed_file" -o "temp_bed.bed"
-        mv "temp_bed.bed" "$bed_file"
-        tmp_bed_with_header="$(mktemp)"
-        {
-            printf '%s\n' "${header_info}"
-            cat "${bed_file}"
-        } > "${tmp_bed_with_header}"
-        mv "${tmp_bed_with_header}" "${bed_file}"
+        if [ -z "$header_info" ]; then
+            mv "temp_bed.bed" "$bed_file"
+        else
+            mv "temp_bed.bed" "$bed_file"   
+            tmp_bed_with_header="$(mktemp)"
+            {
+                printf '%s\n' "${header_info}"
+                cat "${bed_file}"
+            } > "${tmp_bed_with_header}"
+            mv "${tmp_bed_with_header}" "${bed_file}"
+        fi
     fi
 
     echo "Done, uploading BED file: $bed_file"
