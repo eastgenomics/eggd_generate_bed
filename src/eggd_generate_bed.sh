@@ -74,6 +74,7 @@ main() {
         sort -k1,1V -k2,2n "$bed_file" -o "temp_bed.bed"
         mv "temp_bed.bed" "$bed_file"
     elif [-s "$bed_file"] &&  [!-z "$header_info" ]
+    then
         sort -k1,1V -k2,2n "$bed_file" -o "temp_bed.bed"
         mv "temp_bed.bed" "$bed_file"   
         tmp_bed_with_header="$(mktemp)"
